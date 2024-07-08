@@ -1,0 +1,6 @@
+aiohttp
+aiolimiter
+pandas
+pytest
+pytz
+traveltimepy
