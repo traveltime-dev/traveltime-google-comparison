@@ -1,3 +1,39 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "traveltime-google-comparison"
+description = "A tool to compare travel times from TravelTime API and Google Maps API"
+authors = [
+    { name = "TravelTime" },
+]
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "License :: OSI Approved :: MIT License"
+]
+dynamic = ["version"]
+requires-python = ">= 3.8"
+dependencies = [
+    "aiohttp",
+    "aiolimiter",
+    "pandas",
+    "pytz",
+    "traveltimepy"
+]
+
+[project.urls]
+Homepage = "https://github.com/traveltime-dev/traveltime-google-comparison"
+
+[project.optional-dependencies]
+test = [
+    "pytest"
+]
+
+[project.scripts]
+traveltime_google_comparison = "traveltime_google_comparison.main:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "traveltime_google_comparison.__version__" }

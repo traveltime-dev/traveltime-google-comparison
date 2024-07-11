@@ -16,13 +16,6 @@ and [TravelTime Routes API](https://docs.traveltime.com/api/reference/routes).
 The tool requires Python 3.8+ installed on your system. You can download it from [here](https://www.python.org/downloads/).
 
 ## Installation
-
-Clone the repository:
-```bash
-git clone https://github.com/traveltime-dev/google-travel-time-comparison.git
-cd google-travel-time-comparison
-```
-
 Create a new virtual environment with a chosen name (here, we'll name it venv):
 ```bash
 python -m venv venv
@@ -35,7 +28,7 @@ source env/bin/activate
 
 Install the project and its dependencies:
 ```bash
-pip install -e .
+pip install traveltime-google-comparison
 ```
 
 ## Setup
@@ -65,7 +58,8 @@ Required arguments:
     row with data, with two columns: `origin` and `destination`.
     The values in the columns must be latitude and longitude pairs, separated 
     by comma and enclosed in double quotes. For example: `"51.5074,-0.1278"`. Columns must be separated by comma as well.
-    Look at the `examples` directory for examples. You can find more pre-prepared routes in the `inputs` directory.
+    Check out the [project's repository](https://github.com/traveltime-dev/traveltime-google-comparison.git) 
+    for examples in the `examples` directory and more pre-prepared routes in the `inputs` directory.
 - `--output [Output CSV file path]`: Path to the output file. It will contain the gathered travel times. 
   See the details in the [Output section](#output)
 - `--date [Date (YYYY-MM-DD)]`: date on which the travel times are gathered. Use a future date, as Google API returns
