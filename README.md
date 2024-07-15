@@ -16,9 +16,9 @@ Source code is available on [GitHub](https://github.com/traveltime-dev/traveltim
 The tool requires Python 3.8+ installed on your system. You can download it from [here](https://www.python.org/downloads/).
 
 ## Installation
-Create a new virtual environment with a chosen name (here, we'll name it venv):
+Create a new virtual environment with a chosen name (here, we'll name it 'env'):
 ```bash
-python -m venv venv
+python -m venv env
 ```
 
 Activate the virtual environment:
