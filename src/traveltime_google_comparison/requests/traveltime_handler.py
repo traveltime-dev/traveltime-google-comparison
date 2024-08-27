@@ -17,7 +17,7 @@ class TravelTimeRequestHandler(BaseRequestHandler):
     DESTINATION_ID = "d"
 
     def __init__(self, app_id, api_key, max_rpm):
-        self.sdk = TravelTimeSdk(app_id, api_key)
+        self.sdk = TravelTimeSdk(app_id=app_id, api_key=api_key, user_agent="Travel Time Comparison Tool")
         self._rate_limiter = AsyncLimiter(max_rpm // 60, 1)
 
     async def send_request(
