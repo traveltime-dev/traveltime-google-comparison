@@ -3,7 +3,9 @@ from enum import Enum
 import pytest
 
 from traveltime_google_comparison.config import Mode
-from traveltime_google_comparison.requests.google_handler import get_google_specific_mode
+from traveltime_google_comparison.requests.google_handler import (
+    get_google_specific_mode,
+)
 
 
 def test_get_google_specific_mode_for_driving():
