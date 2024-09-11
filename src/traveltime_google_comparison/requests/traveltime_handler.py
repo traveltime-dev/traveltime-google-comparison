@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, Union
+from typing import Union
 import logging
 
 from aiolimiter import AsyncLimiter

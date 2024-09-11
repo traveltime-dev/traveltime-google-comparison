@@ -22,7 +22,8 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
     )
     quantile_errors = calculate_quantiles(results_with_differences, quantile)
     logging.info(
-        f"{int(quantile * 100)}% of TravelTime results differ from Google API by less than {int(quantile_errors.relative_error)}%"
+        f"{int(quantile * 100)}% of TravelTime results differ from Google API "
+        f"by less than {int(quantile_errors.relative_error)}%"
     )
 
     logging.info(f"Detailed results can be found in {output_file} file")

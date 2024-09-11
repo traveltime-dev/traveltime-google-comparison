@@ -58,7 +58,10 @@ def parse_args():
     parser.add_argument(
         "--skip-data-gathering",
         action=argparse.BooleanOptionalAction,
-        help="If set, reads already gathered data from input file and skips data gathering. Input file must conform to the output file format.",
+        help=(
+            "If set, reads already gathered data from input file and skips data gathering. "
+            "Input file must conform to the output file format."
+        ),
     )
     return parser.parse_args()
 
