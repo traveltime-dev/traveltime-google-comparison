@@ -1,5 +1,12 @@
 import pandas as pd
-from traveltime_google_comparison.analysis import *
+from traveltime_google_comparison.analysis import (
+    ABSOLUTE_ERROR,
+    RELATIVE_ERROR,
+    QuantileErrorResult,
+    calculate_differences,
+    calculate_quantiles,
+)
+from traveltime_google_comparison.collect import GOOGLE_API, TRAVELTIME_API, Fields
 
 
 def test_calculate_differences_calculate_absolute_and_relative_differences():
