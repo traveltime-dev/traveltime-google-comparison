@@ -38,8 +38,6 @@ test = [
     "flake8-pyproject",
     "mypy",
     "black",
-    "pandas-stubs",
-    "types-pytz",
 ]
 
 [project.scripts]
