@@ -54,7 +54,7 @@ async def fetch_travel_time(
 
 def parse_coordinates(coord_string: str) -> Coordinates:
     lat, lng = [c.strip() for c in coord_string.split(",")]
-    return Coordinates(lat=lat, lng=lng)
+    return Coordinates(lat=float(lat), lng=float(lng))
 
 
 def wrap_result(

@@ -60,14 +60,14 @@ class TravelTimeRequestHandler(BaseRequestHandler):
             )
         except Exception as e:
             logger.error(f"Exception during requesting TravelTime API, {e}")
-            return RequestResult(None, None)
+            return RequestResult(None)
 
         if (
             not results
             or not results[0].locations
             or not results[0].locations[0].properties
         ):
-            return RequestResult(None, None)
+            return RequestResult(None)
 
         properties = results[0].locations[0].properties[0]
         return RequestResult(travel_time=properties.travel_time)
