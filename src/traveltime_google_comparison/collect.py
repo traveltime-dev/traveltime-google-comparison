@@ -7,7 +7,7 @@ from typing import List, Dict, Union, Optional
 import pandas as pd
 import pytz
 from pandas import DataFrame
-from pytz.tzinfo import BaseTzInfo, StaticTzInfo, DstTzInfo
+from pytz.tzinfo import BaseTzInfo
 from traveltimepy import Coordinates
 
 from traveltime_google_comparison.config import Mode
