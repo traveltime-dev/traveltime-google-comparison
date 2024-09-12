@@ -63,4 +63,6 @@ def calculate_quantiles(
     quantile_relative_error = results_with_differences[RELATIVE_ERROR].quantile(
         quantile, "higher"
     )
-    return QuantileErrorResult(int(quantile_absolute_error), int(quantile_relative_error))
+    return QuantileErrorResult(
+        int(quantile_absolute_error), int(quantile_relative_error)
+    )
