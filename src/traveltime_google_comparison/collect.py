@@ -7,7 +7,7 @@ from typing import List, Dict, Union, Optional
 import pandas as pd
 import pytz
 from pandas import DataFrame
-from pytz.tzinfo import StaticTzInfo, DstTzInfo
+from pytz.tzinfo import BaseTzInfo, StaticTzInfo, DstTzInfo
 from traveltimepy import Coordinates
 
 from traveltime_google_comparison.config import Mode
@@ -72,9 +72,7 @@ def wrap_result(
     }
 
 
-def localize_datetime(
-    date: str, time: str, timezone: Union[StaticTzInfo, DstTzInfo]
-) -> datetime:
+def localize_datetime(date: str, time: str, timezone: BaseTzInfo) -> datetime:
     datetime_instance = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
     return timezone.localize(datetime_instance)
 
