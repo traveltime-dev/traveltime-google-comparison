@@ -25,7 +25,7 @@ dependencies = [
     "aiolimiter",
     "pandas",
     "pytz",
-    "traveltimepy"
+    "traveltimepy==0.1.1.dev1"
 ]
 
 [project.urls]
