@@ -4,7 +4,9 @@ import pytest
 from traveltimepy import Driving, PublicTransport
 
 from traveltime_google_comparison.config import Mode
-from traveltime_google_comparison.requests.traveltime_handler import get_traveltime_specific_mode
+from traveltime_google_comparison.requests.traveltime_handler import (
+    get_traveltime_specific_mode,
+)
 
 
 def test_get_traveltime_specific_mode_for_driving():

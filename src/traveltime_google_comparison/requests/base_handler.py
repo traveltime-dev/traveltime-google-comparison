@@ -20,11 +20,13 @@ class BaseRequestHandler(ABC):
     _just_checking_if_it_complains: str
 
     @abstractmethod
-    async def send_request(self,
-                           origin: Coordinates,
-                           destination: Coordinates,
-                           departure_time: datetime,
-                           mode: Mode) -> RequestResult:
+    async def send_request(
+        self,
+        origin: Coordinates,
+        destination: Coordinates,
+        departure_time: datetime,
+        mode: Mode,
+    ) -> RequestResult:
         pass
 
     @property
