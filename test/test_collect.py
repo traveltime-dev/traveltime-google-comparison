@@ -4,7 +4,11 @@ from datetime import datetime
 import pytz
 from traveltimepy import Coordinates
 
-from traveltime_google_comparison.collect import generate_time_instants, parse_coordinates, localize_datetime
+from traveltime_google_comparison.collect import (
+    generate_time_instants,
+    parse_coordinates,
+    localize_datetime,
+)
 
 
 def test_generate_time_instants_with_time_window_divisible_by_interval():
@@ -12,7 +16,11 @@ def test_generate_time_instants_with_time_window_divisible_by_interval():
     end = datetime(2023, 9, 5, 14, 0)
     interval = 60
     result = generate_time_instants(start, end, interval)
-    expected = [datetime(2023, 9, 5, 12, 0), datetime(2023, 9, 5, 13, 0), datetime(2023, 9, 5, 14, 0)]
+    expected = [
+        datetime(2023, 9, 5, 12, 0),
+        datetime(2023, 9, 5, 13, 0),
+        datetime(2023, 9, 5, 14, 0),
+    ]
     assert result == expected
 
 
@@ -30,7 +38,11 @@ def test_generate_time_instants_with_time_window_not_fully_divisible_by_interval
     end = datetime(2023, 9, 5, 14, 10)
     interval = 45
     result = generate_time_instants(start, end, interval)
-    expected = [datetime(2023, 9, 5, 12, 0), datetime(2023, 9, 5, 12, 45), datetime(2023, 9, 5, 13, 30)]
+    expected = [
+        datetime(2023, 9, 5, 12, 0),
+        datetime(2023, 9, 5, 12, 45),
+        datetime(2023, 9, 5, 13, 30),
+    ]
     assert result == expected
 
 
@@ -48,10 +60,18 @@ def test_parse_coordinates_simple_case():
 
 
 def test_parse_coordinates_with_spaces():
-    assert parse_coordinates("51.4614, -0.1120") == Coordinates(lat=51.4614, lng=-0.1120)
-    assert parse_coordinates("51.4614 , -0.1120") == Coordinates(lat=51.4614, lng=-0.1120)
-    assert parse_coordinates(" 51.4614 , -0.1120") == Coordinates(lat=51.4614, lng=-0.1120)
-    assert parse_coordinates(" 51.4614 , -0.1120 ") == Coordinates(lat=51.4614, lng=-0.1120)
+    assert parse_coordinates("51.4614, -0.1120") == Coordinates(
+        lat=51.4614, lng=-0.1120
+    )
+    assert parse_coordinates("51.4614 , -0.1120") == Coordinates(
+        lat=51.4614, lng=-0.1120
+    )
+    assert parse_coordinates(" 51.4614 , -0.1120") == Coordinates(
+        lat=51.4614, lng=-0.1120
+    )
+    assert parse_coordinates(" 51.4614 , -0.1120 ") == Coordinates(
+        lat=51.4614, lng=-0.1120
+    )
 
 
 def test_parse_coordinates_missing_coma():

@@ -1,13 +1,23 @@
 from datetime import datetime
-from typing import Tuple, Union
+from typing import Union
 import logging
 
 from aiolimiter import AsyncLimiter
-from traveltimepy import Location, Coordinates, TravelTimeSdk, Driving, Property, PublicTransport
+from traveltimepy import (
+    Location,
+    Coordinates,
+    TravelTimeSdk,
+    Driving,
+    Property,
+    PublicTransport,
+)
 from traveltimepy.dto.common import Snapping, SnappingPenalty, SnappingAcceptRoads
 
 from traveltime_google_comparison.config import Mode
-from traveltime_google_comparison.requests.base_handler import BaseRequestHandler, RequestResult
+from traveltime_google_comparison.requests.base_handler import (
+    BaseRequestHandler,
+    RequestResult,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -17,15 +27,17 @@ class TravelTimeRequestHandler(BaseRequestHandler):
     DESTINATION_ID = "d"
 
     def __init__(self, app_id, api_key, max_rpm):
-        self.sdk = TravelTimeSdk(app_id=app_id, api_key=api_key, user_agent="Travel Time Comparison Tool")
+        self.sdk = TravelTimeSdk(
+            app_id=app_id, api_key=api_key, user_agent="Travel Time Comparison Tool"
+        )
         self._rate_limiter = AsyncLimiter(max_rpm // 60, 1)
 
     async def send_request(
-            self,
-            origin: Coordinates,
-            destination: Coordinates,
-            departure_time: datetime,
-            mode: Mode
+        self,
+        origin: Coordinates,
+        destination: Coordinates,
+        departure_time: datetime,
+        mode: Mode,
     ) -> RequestResult:
         locations = [
             Location(id=self.ORIGIN_ID, coords=origin),
@@ -43,15 +55,19 @@ class TravelTimeRequestHandler(BaseRequestHandler):
                 properties=[Property.TRAVEL_TIME],
                 snapping=Snapping(
                     penalty=SnappingPenalty.DISABLED,
-                    accept_roads=SnappingAcceptRoads.BOTH_DRIVABLE_AND_WALKABLE
-                )
+                    accept_roads=SnappingAcceptRoads.BOTH_DRIVABLE_AND_WALKABLE,
+                ),
             )
         except Exception as e:
             logger.error(f"Exception during requesting TravelTime API, {e}")
-            return RequestResult(None, None)
+            return RequestResult(None)
 
-        if not results or not results[0].locations or not results[0].locations[0].properties:
-            return RequestResult(None, None)
+        if (
+            not results
+            or not results[0].locations
+            or not results[0].locations[0].properties
+        ):
+            return RequestResult(None)
 
         properties = results[0].locations[0].properties[0]
         return RequestResult(travel_time=properties.travel_time)
