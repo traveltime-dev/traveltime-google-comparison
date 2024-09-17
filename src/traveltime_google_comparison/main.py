@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 async def run():
+    providers = [GOOGLE_API, TOMTOM_API]
     args = config.parse_args()
     csv = pd.read_csv(
         args.input, usecols=[Fields.ORIGIN, Fields.DESTINATION]
@@ -69,7 +70,7 @@ async def run():
             logger.info(
                 f"Skipped {skipped_rows} rows ({100 * skipped_rows / all_rows:.2f}%)"
             )
-        run_analysis(filtered_travel_times_df, args.output, 0.90)
+        run_analysis(filtered_travel_times_df, args.output, 0.90, providers)
 
 
 def main():
