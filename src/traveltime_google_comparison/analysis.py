@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from typing import List
 
 from pandas import DataFrame
-import pandas
 
 from traveltime_google_comparison.collect import (
     TOMTOM_API,
