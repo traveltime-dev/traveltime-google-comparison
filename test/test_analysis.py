@@ -11,6 +11,7 @@ from traveltime_google_comparison.collect import GOOGLE_API, TRAVELTIME_API, Fie
 ABSOLUTE_ERROR_GOOGLE = absolute_error(GOOGLE_API)
 RELATIVE_ERROR_GOOGLE = relative_error(GOOGLE_API)
 
+
 def test_calculate_differences_calculate_absolute_and_relative_differences():
     data = {
         Fields.TRAVEL_TIME[GOOGLE_API]: [100, 200, 300],
