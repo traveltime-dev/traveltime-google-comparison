@@ -1,7 +1,9 @@
 import logging
 from dataclasses import dataclass
+from typing import List
 
 from pandas import DataFrame
+import pandas
 
 from traveltime_google_comparison.collect import (
     TOMTOM_API,
@@ -11,10 +13,10 @@ from traveltime_google_comparison.collect import (
 )
 
 
-ABSOLUTE_ERROR_GOOGLE = "absolute_error_to_google"
-RELATIVE_ERROR_GOOGLE = "error_percentage_to_google"
-ABSOLUTE_ERROR_TOMTOM = "absolute_error_to_tomtom"
-RELATIVE_ERROR_TOMTOM = "error_percentage_to_tomtom"
+ABSOLUTE_ERROR_GOOGLE = "absolute_error_google"
+RELATIVE_ERROR_GOOGLE = "error_percentage_google"
+ABSOLUTE_ERROR_TOMTOM = "absolute_error_tomtom"
+RELATIVE_ERROR_TOMTOM = "error_percentage_tomtom"
 
 
 @dataclass
@@ -24,7 +26,7 @@ class QuantileErrorResult:
 
 
 def run_analysis(results: DataFrame, output_file: str, quantile: float):
-    results_with_differences = calculate_differences(results)
+    results_with_differences = calculate_differences(results, [GOOGLE_API, TOMTOM_API])
 
     logging.info(
         f"Mean relative error compared to Google API: {results_with_differences[RELATIVE_ERROR_GOOGLE].mean():.2f}%"
@@ -67,36 +69,25 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
     results_with_differences.to_csv(output_file, index=False)
 
 
-def calculate_differences(results: DataFrame) -> DataFrame:
-    results_with_differences = results.assign(
-        **{
-            ABSOLUTE_ERROR_GOOGLE: abs(
-                results[Fields.TRAVEL_TIME[GOOGLE_API]]
+def calculate_differences(results: DataFrame, providers: List[str]) -> DataFrame:
+    results_with_differences = results.copy()
+
+    for provider in providers:
+        if provider != TRAVELTIME_API:
+            absolute_error_col = f"absolute_error_{provider}"
+            relative_error_col = f"error_percentage_{provider}"
+
+            results_with_differences[absolute_error_col] = abs(
+                results[Fields.TRAVEL_TIME[provider]]
                 - results[Fields.TRAVEL_TIME[TRAVELTIME_API]]
             )
-        }
-    )
 
-    results_with_differences[RELATIVE_ERROR_GOOGLE] = (
-        results_with_differences[ABSOLUTE_ERROR_GOOGLE]
-        / results_with_differences[Fields.TRAVEL_TIME[GOOGLE_API]]
-        * 100
-    )
-
-    results_with_differences = results_with_differences.assign(
-        **{
-            ABSOLUTE_ERROR_TOMTOM: abs(
-                results[Fields.TRAVEL_TIME[TOMTOM_API]]
-                - results[Fields.TRAVEL_TIME[TRAVELTIME_API]]
+            results_with_differences[relative_error_col] = (
+                results_with_differences[absolute_error_col]
+                / results_with_differences[Fields.TRAVEL_TIME[provider]]
+                * 100
             )
-        }
-    )
 
-    results_with_differences[RELATIVE_ERROR_TOMTOM] = (
-        results_with_differences[ABSOLUTE_ERROR_TOMTOM]
-        / results_with_differences[Fields.TRAVEL_TIME[TOMTOM_API]]
-        * 100
-    )
     return results_with_differences
 
 

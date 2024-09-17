@@ -15,7 +15,7 @@ def test_calculate_differences_calculate_absolute_and_relative_differences():
         Fields.TRAVEL_TIME[TRAVELTIME_API]: [90, 210, 290],
     }
     df = pd.DataFrame(data)
-    result_df = calculate_differences(df)
+    result_df = calculate_differences(df, [GOOGLE_API])
 
     assert result_df[ABSOLUTE_ERROR_GOOGLE].tolist() == [10, 10, 10]
     assert result_df[RELATIVE_ERROR_GOOGLE].tolist() == [10.0, 5.0, 10.0 / 3]
@@ -27,7 +27,7 @@ def test_calculate_differences_survives_division_by_zero():
         Fields.TRAVEL_TIME[TRAVELTIME_API]: [90, 210, 290],
     }
     df = pd.DataFrame(data)
-    result_df = calculate_differences(df)
+    result_df = calculate_differences(df, [GOOGLE_API])
 
     assert result_df[ABSOLUTE_ERROR_GOOGLE].tolist() == [90, 10, 10]
     assert result_df[RELATIVE_ERROR_GOOGLE].tolist() == [float("inf"), 5.0, 10.0 / 3]
