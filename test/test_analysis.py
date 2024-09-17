@@ -11,6 +11,7 @@ from traveltime_google_comparison.collect import GOOGLE_API, TRAVELTIME_API, Fie
 absolute_error_google = absolute_error(GOOGLE_API)
 relative_error_google = relative_error(GOOGLE_API)
 
+
 def test_calculate_differences_calculate_absolute_and_relative_differences():
     data = {
         Fields.TRAVEL_TIME[GOOGLE_API]: [100, 200, 300],
@@ -45,27 +46,17 @@ odd_df = pd.DataFrame(odd_data)
 def test_calculate_quantiles_return_exact_element_for_quantile_which_provides_an_exact_division():
     # Test 1: Basic Quantile Test
 
-    result = calculate_quantiles(
-        odd_df, 0.5, GOOGLE_API
-    )
+    result = calculate_quantiles(odd_df, 0.5, GOOGLE_API)
 
     assert isinstance(result, QuantileErrorResult)
     assert result.absolute_error == 30
     assert result.relative_error == 15
 
-    assert calculate_quantiles(
-        odd_df, 0.25, GOOGLE_API
-    ) == QuantileErrorResult(20, 10)
-    assert calculate_quantiles(
-        odd_df, 0.75, GOOGLE_API
-    ) == QuantileErrorResult(40, 20)
+    assert calculate_quantiles(odd_df, 0.25, GOOGLE_API) == QuantileErrorResult(20, 10)
+    assert calculate_quantiles(odd_df, 0.75, GOOGLE_API) == QuantileErrorResult(40, 20)
 
-    assert calculate_quantiles(
-        odd_df, 0.0, GOOGLE_API
-    ) == QuantileErrorResult(10, 5)
-    assert calculate_quantiles(
-        odd_df, 1.0, GOOGLE_API
-    ) == QuantileErrorResult(50, 25)
+    assert calculate_quantiles(odd_df, 0.0, GOOGLE_API) == QuantileErrorResult(10, 5)
+    assert calculate_quantiles(odd_df, 1.0, GOOGLE_API) == QuantileErrorResult(50, 25)
 
 
 def test_calculate_quantiles_return_next_element_for_quantile_which_does_not_provide_an_exact_division():
@@ -75,15 +66,9 @@ def test_calculate_quantiles_return_next_element_for_quantile_which_does_not_pro
     }
     even_df = pd.DataFrame(even_data)
 
-    assert calculate_quantiles(
-        odd_df, 0.01, GOOGLE_API
-    ) == QuantileErrorResult(20, 10)
-    assert calculate_quantiles(
-        even_df, 0.5, GOOGLE_API
-    ) == QuantileErrorResult(30, 15)
-    assert calculate_quantiles(
-        odd_df, 0.99, GOOGLE_API
-    ) == QuantileErrorResult(50, 25)
+    assert calculate_quantiles(odd_df, 0.01, GOOGLE_API) == QuantileErrorResult(20, 10)
+    assert calculate_quantiles(even_df, 0.5, GOOGLE_API) == QuantileErrorResult(30, 15)
+    assert calculate_quantiles(odd_df, 0.99, GOOGLE_API) == QuantileErrorResult(50, 25)
 
 
 def test_calculate_quantiles_for_unsorted_list():

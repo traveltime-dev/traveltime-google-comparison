@@ -12,8 +12,12 @@ from traveltime_google_comparison.collect import (
 )
 
 
-def absolute_error(compare_to: str) -> str: return f"absolute_error_{compare_to}"
-def relative_error(compare_to: str) -> str: return f"error_percentage_{compare_to}"
+def absolute_error(compare_to: str) -> str:
+    return f"absolute_error_{compare_to}"
+
+
+def relative_error(compare_to: str) -> str:
+    return f"error_percentage_{compare_to}"
 
 
 @dataclass
@@ -57,10 +61,10 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
     )
 
     results_with_differences[relative_error(GOOGLE_API)] = results_with_differences[
-       relative_error(GOOGLE_API) 
+        relative_error(GOOGLE_API)
     ].astype(int)
     results_with_differences[relative_error(TOMTOM_API)] = results_with_differences[
-       relative_error(TOMTOM_API) 
+        relative_error(TOMTOM_API)
     ].astype(int)
 
     results_with_differences.to_csv(output_file, index=False)
@@ -93,12 +97,12 @@ def calculate_quantiles(
     quantile: float,
     compare_to: str,
 ) -> QuantileErrorResult:
-    quantile_absolute_error = results_with_differences[absolute_error(compare_to)].quantile(
-        quantile, "higher"
-    )
-    quantile_relative_error = results_with_differences[relative_error(compare_to)].quantile(
-        quantile, "higher"
-    )
+    quantile_absolute_error = results_with_differences[
+        absolute_error(compare_to)
+    ].quantile(quantile, "higher")
+    quantile_relative_error = results_with_differences[
+        relative_error(compare_to)
+    ].quantile(quantile, "higher")
     return QuantileErrorResult(
         int(quantile_absolute_error), int(quantile_relative_error)
     )
