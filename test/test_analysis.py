@@ -70,8 +70,8 @@ def test_calculate_quantiles_return_next_element_for_quantile_which_does_not_pro
 
 def test_calculate_quantiles_for_unsorted_list():
     random_order_data = {
-        absolute_error: [40, 10, 30, 50, 20],
-        relative_error: [25.0, 20.0, 10.0, 15.0, 5.0],
+        absolute_error_to_google: [40, 10, 30, 50, 20],
+        relative_error_to_google: [25.0, 20.0, 10.0, 15.0, 5.0],
     }
     random_order_df = pd.DataFrame(random_order_data)
     assert calculate_quantiles(
