@@ -6,7 +6,7 @@ import pandas as pd
 from traveltime_google_comparison import collect
 from traveltime_google_comparison import config
 from traveltime_google_comparison.analysis import run_analysis
-from traveltime_google_comparison.collect import Fields, GOOGLE_API, TRAVELTIME_API
+from traveltime_google_comparison.collect import Fields, GOOGLE_API, TRAVELTIME_API, TOMTOM_API
 from traveltime_google_comparison.requests import factory
 
 logging.basicConfig(
