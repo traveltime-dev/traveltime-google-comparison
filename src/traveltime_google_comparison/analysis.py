@@ -13,8 +13,8 @@ from traveltime_google_comparison.collect import (
 
 ABSOLUTE_ERROR_GOOGLE = "absolute_error_to_google"
 RELATIVE_ERROR_GOOGLE = "error_percentage_to_google"
-ABSOLUTE_ERROR_TOMTOM = "absolute_error_to_google"
-RELATIVE_ERROR_TOMTOM = "error_percentage_to_google"
+ABSOLUTE_ERROR_TOMTOM = "absolute_error_to_tomtom"
+RELATIVE_ERROR_TOMTOM = "error_percentage_to_tomtom"
 
 
 @dataclass
@@ -58,10 +58,10 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
     )
 
     results_with_differences[
-        RELATIVE_ERROR_GOOGLE(GOOGLE_API)
+        RELATIVE_ERROR_GOOGLE
     ] = results_with_differences[RELATIVE_ERROR_GOOGLE].astype(int)
     results_with_differences[
-        RELATIVE_ERROR_GOOGLE(TOMTOM_API)
+        RELATIVE_ERROR_TOMTOM
     ] = results_with_differences[RELATIVE_ERROR_TOMTOM].astype(int)
 
     results_with_differences.to_csv(output_file, index=False)
