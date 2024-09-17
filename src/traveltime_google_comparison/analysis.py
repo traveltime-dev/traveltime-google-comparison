@@ -4,7 +4,7 @@ from typing import List
 
 from pandas import DataFrame
 
-from traveltime_google_comparison.collect import Fields,TRAVELTIME_API
+from traveltime_google_comparison.collect import Fields, TRAVELTIME_API
 
 
 def absolute_error(api_provider: str) -> str:
