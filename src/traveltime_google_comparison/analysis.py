@@ -26,7 +26,8 @@ def log_resuluts(
 ):
     for provider in api_providers:
         logging.info(
-            f"Mean relative error compared to {provider.upper()} API: {results_with_differences[relative_error(provider)].mean():.2f}%"
+            f"Mean relative error compared to {provider.upper()} "
+            f"API: {results_with_differences[relative_error(provider)].mean():.2f}%"
         )
         quantile_errors = calculate_quantiles(
             results_with_differences, quantile, provider
