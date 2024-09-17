@@ -14,6 +14,7 @@ from traveltime_google_comparison.config import Mode
 from traveltime_google_comparison.requests.base_handler import BaseRequestHandler
 
 GOOGLE_API = "google"
+TOMTOM_API = "tomtom"
 TRAVELTIME_API = "traveltime"
 
 

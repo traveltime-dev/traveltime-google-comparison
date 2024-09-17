@@ -29,7 +29,7 @@ async def run():
         return
 
     request_handlers = factory.initialize_request_handlers(
-        args.google_max_rpm, args.traveltime_max_rpm
+        args.google_max_rpm, args.tomtom_max_rpm, args.traveltime_max_rpm
     )
     if args.skip_data_gathering:
         travel_times_df = pd.read_csv(

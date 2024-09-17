@@ -12,6 +12,7 @@ DEFAULT_GOOGLE_RPM = 60
 DEFAULT_TRAVELTIME_RPM = 60
 
 GOOGLE_API_KEY_VAR_NAME = "GOOGLE_API_KEY"
+TOMTOM_API_KEY_VAR_NAME = "TOMTOM_API_KEY"
 TRAVELTIME_APP_ID_VAR_NAME = "TRAVELTIME_APP_ID"
 TRAVELTIME_API_KEY_VAR_NAME = "TRAVELTIME_API_KEY"
 
@@ -72,6 +73,14 @@ def retrieve_google_api_key():
     if not google_api_key:
         raise ValueError(f"{GOOGLE_API_KEY_VAR_NAME} not set in environment variables.")
     return google_api_key
+
+
+def retrieve_tomtom_api_key():
+    tomtom_api_key = os.environ.get(TOMTOM_API_KEY_VAR_NAME)
+
+    if not tomtom_api_key:
+        raise ValueError(f"{TOMTOM_API_KEY_VAR_NAME} not set in environment variables.")
+    return tomtom_api_key 
 
 
 def retrieve_traveltime_credentials() -> TravelTimeCredentials:
