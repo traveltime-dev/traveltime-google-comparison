@@ -11,12 +11,10 @@ from traveltime_google_comparison.collect import (
 )
 
 
-def absolute_error(compareTo: str) -> str:
-    return f"absolute_error_to_{compareTo}"
-
-
-def relative_error(compareTo: str) -> str:
-    return f"error_percentage_to_{compareTo}"
+ABSOLUTE_ERROR_GOOGLE = "absolute_error_to_google"
+RELATIVE_ERROR_GOOGLE = "error_percentage_to_google"
+ABSOLUTE_ERROR_TOMTOM = "absolute_error_to_google"
+RELATIVE_ERROR_TOMTOM = "error_percentage_to_google"
 
 
 @dataclass
@@ -29,10 +27,10 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
     results_with_differences = calculate_differences(results)
 
     logging.info(
-        f"Mean relative error compared to Google API: {results_with_differences[relative_error(GOOGLE_API)].mean():.2f}%"
+        f"Mean relative error compared to Google API: {results_with_differences[RELATIVE_ERROR_GOOGLE].mean():.2f}%"
     )
     quantile_errors = calculate_quantiles(
-        results_with_differences, quantile, GOOGLE_API
+        results_with_differences, quantile, ABSOLUTE_ERROR_GOOGLE
     )
     logging.info(
         f"{int(quantile * 100)}% of TravelTime results differ from Google API "
@@ -40,10 +38,10 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
     )
 
     logging.info(
-        f"Mean relative error compared to TomTom API: {results_with_differences[relative_error(TOMTOM_API)].mean():.2f}%"
+        f"Mean relative error compared to TomTom API: {results_with_differences[RELATIVE_ERROR_TOMTOM].mean():.2f}%"
     )
     quantile_errors = calculate_quantiles(
-        results_with_differences, quantile, TOMTOM_API
+        results_with_differences, quantile, ABSOLUTE_ERROR_TOMTOM
     )
     logging.info(
         f"{int(quantile * 100)}% of TravelTime results differ from TomTom API "
@@ -53,18 +51,18 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
     logging.info(f"Detailed results can be found in {output_file} file")
 
     results_with_differences = results_with_differences.drop(
-        columns=[absolute_error(GOOGLE_API)]
+        columns=[ABSOLUTE_ERROR_GOOGLE]
     )
     results_with_differences = results_with_differences.drop(
-        columns=[absolute_error(TOMTOM_API)]
+        columns=[ABSOLUTE_ERROR_TOMTOM]
     )
 
-    results_with_differences[relative_error(GOOGLE_API)] = results_with_differences[
-        relative_error(GOOGLE_API)
-    ].astype(int)
-    results_with_differences[relative_error(TOMTOM_API)] = results_with_differences[
-        relative_error(TOMTOM_API)
-    ].astype(int)
+    results_with_differences[
+        RELATIVE_ERROR_GOOGLE(GOOGLE_API)
+    ] = results_with_differences[RELATIVE_ERROR_GOOGLE].astype(int)
+    results_with_differences[
+        RELATIVE_ERROR_GOOGLE(TOMTOM_API)
+    ] = results_with_differences[RELATIVE_ERROR_TOMTOM].astype(int)
 
     results_with_differences.to_csv(output_file, index=False)
 
@@ -72,30 +70,30 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
 def calculate_differences(results: DataFrame) -> DataFrame:
     results_with_differences = results.assign(
         **{
-            absolute_error(GOOGLE_API): abs(
+            ABSOLUTE_ERROR_GOOGLE: abs(
                 results[Fields.TRAVEL_TIME[GOOGLE_API]]
                 - results[Fields.TRAVEL_TIME[TRAVELTIME_API]]
             )
         }
     )
 
-    results_with_differences[relative_error(GOOGLE_API)] = (
-        results_with_differences[absolute_error(GOOGLE_API)]
+    results_with_differences[RELATIVE_ERROR_GOOGLE] = (
+        results_with_differences[ABSOLUTE_ERROR_GOOGLE]
         / results_with_differences[Fields.TRAVEL_TIME[GOOGLE_API]]
         * 100
     )
 
     results_with_differences = results_with_differences.assign(
         **{
-            absolute_error(TOMTOM_API): abs(
+            ABSOLUTE_ERROR_TOMTOM: abs(
                 results[Fields.TRAVEL_TIME[TOMTOM_API]]
                 - results[Fields.TRAVEL_TIME[TRAVELTIME_API]]
             )
         }
     )
 
-    results_with_differences[relative_error(TOMTOM_API)] = (
-        results_with_differences[absolute_error(TOMTOM_API)]
+    results_with_differences[RELATIVE_ERROR_TOMTOM] = (
+        results_with_differences[ABSOLUTE_ERROR_TOMTOM]
         / results_with_differences[Fields.TRAVEL_TIME[TOMTOM_API]]
         * 100
     )
@@ -105,14 +103,14 @@ def calculate_differences(results: DataFrame) -> DataFrame:
 def calculate_quantiles(
     results_with_differences: DataFrame,
     quantile: float,
-    compareTo: str,
+    absolute_error_str: str,
 ) -> QuantileErrorResult:
-    quantile_absolute_error = results_with_differences[
-        absolute_error(compareTo)
-    ].quantile(quantile, "higher")
-    quantile_relative_error = results_with_differences[
-        relative_error(compareTo)
-    ].quantile(quantile, "higher")
+    quantile_absolute_error = results_with_differences[absolute_error_str].quantile(
+        quantile, "higher"
+    )
+    quantile_relative_error = results_with_differences[absolute_error_str].quantile(
+        quantile, "higher"
+    )
     return QuantileErrorResult(
         int(quantile_absolute_error), int(quantile_relative_error)
     )
