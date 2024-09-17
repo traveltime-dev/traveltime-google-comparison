@@ -74,5 +74,9 @@ def test_calculate_quantiles_for_unsorted_list():
         relative_error: [25.0, 20.0, 10.0, 15.0, 5.0],
     }
     random_order_df = pd.DataFrame(random_order_data)
-    assert calculate_quantiles(random_order_df, 0.25, GOOGLE_API) == QuantileErrorResult(20, 10)
-    assert calculate_quantiles(random_order_df, 0.75, GOOGLE_API) == QuantileErrorResult(40, 20)
+    assert calculate_quantiles(
+        random_order_df, 0.25, GOOGLE_API
+    ) == QuantileErrorResult(20, 10)
+    assert calculate_quantiles(
+        random_order_df, 0.75, GOOGLE_API
+    ) == QuantileErrorResult(40, 20)
