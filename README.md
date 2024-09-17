@@ -40,7 +40,7 @@ For Google Maps API:
 export GOOGLE_API_KEY=[Your Google Maps API Key]
 ```
 
-For TomTom Maps API:
+For TomTom API:
 
 ```bash
 export TOMTOM_API_KEY=[Your TomTom API Key]
