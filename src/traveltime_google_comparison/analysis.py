@@ -57,12 +57,12 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
         columns=[ABSOLUTE_ERROR_TOMTOM]
     )
 
-    results_with_differences[
+    results_with_differences[RELATIVE_ERROR_GOOGLE] = results_with_differences[
         RELATIVE_ERROR_GOOGLE
-    ] = results_with_differences[RELATIVE_ERROR_GOOGLE].astype(int)
-    results_with_differences[
+    ].astype(int)
+    results_with_differences[RELATIVE_ERROR_TOMTOM] = results_with_differences[
         RELATIVE_ERROR_TOMTOM
-    ] = results_with_differences[RELATIVE_ERROR_TOMTOM].astype(int)
+    ].astype(int)
 
     results_with_differences.to_csv(output_file, index=False)
 
