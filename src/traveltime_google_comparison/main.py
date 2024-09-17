@@ -6,7 +6,12 @@ import pandas as pd
 from traveltime_google_comparison import collect
 from traveltime_google_comparison import config
 from traveltime_google_comparison.analysis import run_analysis
-from traveltime_google_comparison.collect import Fields, GOOGLE_API, TRAVELTIME_API, TOMTOM_API
+from traveltime_google_comparison.collect import (
+    Fields,
+    GOOGLE_API,
+    TRAVELTIME_API,
+    TOMTOM_API,
+)
 from traveltime_google_comparison.requests import factory
 
 logging.basicConfig(
@@ -39,6 +44,7 @@ async def run():
                 Fields.DESTINATION,
                 Fields.DEPARTURE_TIME,
                 Fields.TRAVEL_TIME[GOOGLE_API],
+                Fields.TRAVEL_TIME[TOMTOM_API],
                 Fields.TRAVEL_TIME[TRAVELTIME_API],
             ],
         )
@@ -48,6 +54,7 @@ async def run():
         )
     filtered_travel_times_df = travel_times_df.loc[
         travel_times_df[Fields.TRAVEL_TIME[GOOGLE_API]].notna()
+        & travel_times_df[Fields.TRAVEL_TIME[TOMTOM_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[TRAVELTIME_API]].notna(),
         :,
     ]

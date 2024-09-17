@@ -89,7 +89,7 @@ def retrieve_tomtom_api_key():
 
     if not tomtom_api_key:
         raise ValueError(f"{TOMTOM_API_KEY_VAR_NAME} not set in environment variables.")
-    return tomtom_api_key 
+    return tomtom_api_key
 
 
 def retrieve_traveltime_credentials() -> TravelTimeCredentials:

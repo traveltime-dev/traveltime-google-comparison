@@ -23,7 +23,11 @@ class Fields:
     ORIGIN = "origin"
     DESTINATION = "destination"
     DEPARTURE_TIME = "departure_time"
-    TRAVEL_TIME = {GOOGLE_API: "google_travel_time", TRAVELTIME_API: "tt_travel_time"}
+    TRAVEL_TIME = {
+        GOOGLE_API: "google_travel_time",
+        TOMTOM_API: "tomtom_travel_time",
+        TRAVELTIME_API: "tt_travel_time",
+    }
 
 
 logger = logging.getLogger(__name__)
@@ -112,7 +116,7 @@ async def collect_travel_times(
 
     tasks = generate_tasks(data, time_instants, request_handlers, mode=Mode.DRIVING)
 
-    logger.info(f"Sending {len(tasks)} requests to Google and TravelTime APIs")
+    logger.info(f"Sending {len(tasks)} requests to Google, TomTom and TravelTime APIs")
 
     results = await asyncio.gather(*tasks)
 
@@ -122,6 +126,7 @@ async def collect_travel_times(
     ).agg(
         {
             Fields.TRAVEL_TIME[GOOGLE_API]: "first",
+            Fields.TRAVEL_TIME[TOMTOM_API]: "first",
             Fields.TRAVEL_TIME[TRAVELTIME_API]: "first",
         }
     )
