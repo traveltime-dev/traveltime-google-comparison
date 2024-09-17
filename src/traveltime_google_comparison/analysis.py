@@ -31,7 +31,7 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
         f"Mean relative error compared to Google API: {results_with_differences[RELATIVE_ERROR_GOOGLE].mean():.2f}%"
     )
     quantile_errors = calculate_quantiles(
-        results_with_differences, quantile, ABSOLUTE_ERROR_GOOGLE
+        results_with_differences, quantile, ABSOLUTE_ERROR_GOOGLE, RELATIVE_ERROR_GOOGLE
     )
     logging.info(
         f"{int(quantile * 100)}% of TravelTime results differ from Google API "
@@ -42,7 +42,7 @@ def run_analysis(results: DataFrame, output_file: str, quantile: float):
         f"Mean relative error compared to TomTom API: {results_with_differences[RELATIVE_ERROR_TOMTOM].mean():.2f}%"
     )
     quantile_errors = calculate_quantiles(
-        results_with_differences, quantile, ABSOLUTE_ERROR_TOMTOM
+        results_with_differences, quantile, ABSOLUTE_ERROR_TOMTOM, RELATIVE_ERROR_TOMTOM
     )
     logging.info(
         f"{int(quantile * 100)}% of TravelTime results differ from TomTom API "
@@ -94,11 +94,12 @@ def calculate_quantiles(
     results_with_differences: DataFrame,
     quantile: float,
     absolute_error_str: str,
+    relative_error_str: str,
 ) -> QuantileErrorResult:
     quantile_absolute_error = results_with_differences[absolute_error_str].quantile(
         quantile, "higher"
     )
-    quantile_relative_error = results_with_differences[absolute_error_str].quantile(
+    quantile_relative_error = results_with_differences[relative_error_str].quantile(
         quantile, "higher"
     )
     return QuantileErrorResult(
