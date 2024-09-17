@@ -2,7 +2,6 @@ import logging
 from dataclasses import dataclass
 
 from pandas import DataFrame
-import pandas
 
 from traveltime_google_comparison.collect import (
     TOMTOM_API,
@@ -28,8 +27,6 @@ class QuantileErrorResult:
 
 def run_analysis(results: DataFrame, output_file: str, quantile: float):
     results_with_differences = calculate_differences(results)
-
-    print(results_with_differences)
 
     logging.info(
         f"Mean relative error compared to Google API: {results_with_differences[relative_error(GOOGLE_API)].mean():.2f}%"
