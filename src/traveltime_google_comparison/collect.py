@@ -13,9 +13,20 @@ from traveltimepy import Coordinates
 from traveltime_google_comparison.config import Mode
 from traveltime_google_comparison.requests.base_handler import BaseRequestHandler
 
-GOOGLE_API = "Google"
-TOMTOM_API = "TomTom"
-TRAVELTIME_API = "TravelTime"
+GOOGLE_API = "google"
+TOMTOM_API = "tomtom"
+TRAVELTIME_API = "traveltime"
+
+
+def get_capitalized_provider_name(provider: str) -> str:
+    if provider == "google":
+        return "Google"
+    elif provider == "tomtom":
+        return "TomTom"
+    elif provider == "traveltime":
+        return "TravelTime"
+    else:
+        raise ValueError(f"Unsupported API provider: {provider}")
 
 
 @dataclass
@@ -105,7 +116,7 @@ def generate_tasks(
 
 
 async def collect_travel_times(
-    args, data, request_handlers: Dict[str, BaseRequestHandler]
+    args, data, request_handlers: Dict[str, BaseRequestHandler], providers: List[str]
 ) -> DataFrame:
     timezone = pytz.timezone(args.time_zone_id)
     localized_start_datetime = localize_datetime(args.date, args.start_time, timezone)
@@ -116,7 +127,12 @@ async def collect_travel_times(
 
     tasks = generate_tasks(data, time_instants, request_handlers, mode=Mode.DRIVING)
 
-    logger.info(f"Sending {len(tasks)} requests to Google, TomTom and TravelTime APIs")
+    capitalized_providers_str = ", ".join(
+        [get_capitalized_provider_name(provider) for provider in providers]
+    )
+    logger.info(
+        f"Sending {len(tasks)} requests to {capitalized_providers_str} and TravelTime APIs"
+    )
 
     results = await asyncio.gather(*tasks)
 

@@ -51,7 +51,7 @@ async def run():
         )
     else:
         travel_times_df = await collect.collect_travel_times(
-            args, csv, request_handlers
+            args, csv, request_handlers, providers
         )
     filtered_travel_times_df = travel_times_df.loc[
         travel_times_df[Fields.TRAVEL_TIME[GOOGLE_API]].notna()

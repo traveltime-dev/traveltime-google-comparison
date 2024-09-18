@@ -4,7 +4,11 @@ from typing import List
 
 from pandas import DataFrame
 
-from traveltime_google_comparison.collect import Fields, TRAVELTIME_API
+from traveltime_google_comparison.collect import (
+    Fields,
+    TRAVELTIME_API,
+    get_capitalized_provider_name,
+)
 
 
 def absolute_error(api_provider: str) -> str:
@@ -25,15 +29,16 @@ def log_results(
     results_with_differences: DataFrame, quantile: float, api_providers: List[str]
 ):
     for provider in api_providers:
+        capitalized_provider = get_capitalized_provider_name(provider)
         logging.info(
-            f"Mean relative error compared to {provider} "
+            f"Mean relative error compared to {capitalized_provider} "
             f"API: {results_with_differences[relative_error(provider)].mean():.2f}%"
         )
         quantile_errors = calculate_quantiles(
             results_with_differences, quantile, provider
         )
         logging.info(
-            f"{int(quantile * 100)}% of TravelTime results differ from {provider} API "
+            f"{int(quantile * 100)}% of TravelTime results differ from {capitalized_provider} API "
             f"by less than {int(quantile_errors.relative_error)}%"
         )
 
