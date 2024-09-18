@@ -82,7 +82,9 @@ Required arguments:
 
 
 Optional arguments:
-- `--google-max-rpm [int]`: Set max number of parallel requests sent to Google API per minute. Default is 60. 
+- `--google-max-rpm [int]`: Set max number of parallel requests sent to Google API per minute. Default is 60.
+  It is enforced on per-second basis, to avoid bursts.
+- `--tomtom-max-rpm [int]`: Set max number of parallel requests sent to TomTom API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 - `--traveltime-max-rpm [int]`: Set max number of parallel requests sent to TravelTime API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
