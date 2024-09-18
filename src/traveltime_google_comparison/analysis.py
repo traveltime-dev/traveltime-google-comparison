@@ -21,19 +21,19 @@ class QuantileErrorResult:
     relative_error: int
 
 
-def log_resuluts(
+def log_results(
     results_with_differences: DataFrame, quantile: float, api_providers: List[str]
 ):
     for provider in api_providers:
         logging.info(
-            f"Mean relative error compared to {provider.upper()} "
+            f"Mean relative error compared to {provider} "
             f"API: {results_with_differences[relative_error(provider)].mean():.2f}%"
         )
         quantile_errors = calculate_quantiles(
             results_with_differences, quantile, provider
         )
         logging.info(
-            f"{int(quantile * 100)}% of TravelTime results differ from {provider.upper()} API "
+            f"{int(quantile * 100)}% of TravelTime results differ from {provider} API "
             f"by less than {int(quantile_errors.relative_error)}%"
         )
 
@@ -57,7 +57,7 @@ def run_analysis(
     results: DataFrame, output_file: str, quantile: float, api_providers: List[str]
 ):
     results_with_differences = calculate_differences(results, api_providers)
-    log_resuluts(results_with_differences, quantile, api_providers)
+    log_results(results_with_differences, quantile, api_providers)
 
     logging.info(f"Detailed results can be found in {output_file} file")
 

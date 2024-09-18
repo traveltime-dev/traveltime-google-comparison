@@ -59,11 +59,11 @@ class TomTomRequestHandler(BaseRequestHandler):
                 else:
                     error_message = data.get("detailedError", "")
                     logger.error(
-                        f"Error in Google API response: {response.status} - {error_message}"
+                        f"Error in TomTom API response: {response.status} - {error_message}"
                     )
                     return RequestResult(None)
         except Exception as e:
-            logger.error(f"Exception during requesting Google API, {e}")
+            logger.error(f"Exception during requesting TomTom API, {e}")
             return RequestResult(None)
 
 
