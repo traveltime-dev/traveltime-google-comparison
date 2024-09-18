@@ -75,8 +75,8 @@ def calculate_differences(results: DataFrame, api_providers: List[str]) -> DataF
     results_with_differences = results.copy()
 
     for provider in api_providers:
-        absolute_error_col = f"absolute_error_{provider}"
-        relative_error_col = f"error_percentage_{provider}"
+        absolute_error_col = absolute_error(provider)
+        relative_error_col = relative_error(provider)
 
         results_with_differences[absolute_error_col] = abs(
             results[Fields.TRAVEL_TIME[provider]]
