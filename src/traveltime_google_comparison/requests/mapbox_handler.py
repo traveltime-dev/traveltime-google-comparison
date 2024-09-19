@@ -48,8 +48,7 @@ class MapboxRequestHandler(BaseRequestHandler):
                 f"{self.MAPBOX_ROUTES_URL}/{transport_mode}/{route}", params=params
             ) as response:
                 data = await response.json()
-                code = data["code"]
-                if code == "Ok":
+                if response.status == 200:
                     duration = data["routes"][0]["duration"]
                     if not duration:
                         raise MapboxApiError(
