@@ -4,7 +4,6 @@ from datetime import datetime
 import aiohttp
 from aiolimiter import AsyncLimiter
 from traveltimepy import Coordinates
-from traveltimepy.http import asyncio, json
 
 from traveltime_google_comparison.config import Mode
 from traveltime_google_comparison.requests.base_handler import (
