@@ -6,7 +6,12 @@ import pandas as pd
 from traveltime_google_comparison import collect
 from traveltime_google_comparison import config
 from traveltime_google_comparison.analysis import run_analysis
-from traveltime_google_comparison.collect import Fields, GOOGLE_API, TRAVELTIME_API
+from traveltime_google_comparison.collect import (
+    Fields,
+    GOOGLE_API,
+    TRAVELTIME_API,
+    TOMTOM_API,
+)
 from traveltime_google_comparison.requests import factory
 
 logging.basicConfig(
@@ -19,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 async def run():
+    providers = [GOOGLE_API, TOMTOM_API]
     args = config.parse_args()
     csv = pd.read_csv(
         args.input, usecols=[Fields.ORIGIN, Fields.DESTINATION]
@@ -29,7 +35,7 @@ async def run():
         return
 
     request_handlers = factory.initialize_request_handlers(
-        args.google_max_rpm, args.traveltime_max_rpm
+        args.google_max_rpm, args.tomtom_max_rpm, args.traveltime_max_rpm
     )
     if args.skip_data_gathering:
         travel_times_df = pd.read_csv(
@@ -39,15 +45,17 @@ async def run():
                 Fields.DESTINATION,
                 Fields.DEPARTURE_TIME,
                 Fields.TRAVEL_TIME[GOOGLE_API],
+                Fields.TRAVEL_TIME[TOMTOM_API],
                 Fields.TRAVEL_TIME[TRAVELTIME_API],
             ],
         )
     else:
         travel_times_df = await collect.collect_travel_times(
-            args, csv, request_handlers
+            args, csv, request_handlers, providers
         )
     filtered_travel_times_df = travel_times_df.loc[
         travel_times_df[Fields.TRAVEL_TIME[GOOGLE_API]].notna()
+        & travel_times_df[Fields.TRAVEL_TIME[TOMTOM_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[TRAVELTIME_API]].notna(),
         :,
     ]
@@ -62,7 +70,7 @@ async def run():
             logger.info(
                 f"Skipped {skipped_rows} rows ({100 * skipped_rows / all_rows:.2f}%)"
             )
-        run_analysis(filtered_travel_times_df, args.output, 0.90)
+        run_analysis(filtered_travel_times_df, args.output, 0.90, providers)
 
 
 def main():

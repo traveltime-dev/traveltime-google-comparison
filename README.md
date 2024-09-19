@@ -1,12 +1,13 @@
 # TravelTime/Google comparison tool
 
-This tool compares the travel times obtained from [TravelTime Routes API](https://docs.traveltime.com/api/reference/routes) 
-and [Google Maps Directions API](https://developers.google.com/maps/documentation/directions/get-directions).
+This tool compares the travel times obtained from [TravelTime Routes API](https://docs.traveltime.com/api/reference/routes),
+[Google Maps Directions API](https://developers.google.com/maps/documentation/directions/get-directions),
+and [TomTom Routing API](https://developer.tomtom.com/routing-api/documentation/tomtom-maps/routing-service).
 Source code is available on [GitHub](https://github.com/traveltime-dev/traveltime-google-comparison).
 
 ## Features
 
-- Get travel times from TravelTime API and Google Maps API in parallel, for provided origin/destination pairs and a set 
+- Get travel times from TravelTime API, Google Maps API and TomTom API in parallel, for provided origin/destination pairs and a set 
     of departure times.
 - Departure times are calculated based on user provided start time, end time and interval.  
 - Analyze the differences between the results and print out the average error percentage.
@@ -38,6 +39,12 @@ For Google Maps API:
 
 ```bash
 export GOOGLE_API_KEY=[Your Google Maps API Key]
+```
+
+For TomTom API:
+
+```bash
+export TOMTOM_API_KEY=[Your TomTom API Key]
 ```
 
 For TravelTime API:
@@ -76,7 +83,9 @@ Required arguments:
 
 
 Optional arguments:
-- `--google-max-rpm [int]`: Set max number of parallel requests sent to Google API per minute. Default is 60. 
+- `--google-max-rpm [int]`: Set max number of parallel requests sent to Google API per minute. Default is 60.
+  It is enforced on per-second basis, to avoid bursts.
+- `--tomtom-max-rpm [int]`: Set max number of parallel requests sent to TomTom API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 - `--traveltime-max-rpm [int]`: Set max number of parallel requests sent to TravelTime API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
@@ -106,13 +115,13 @@ The output file will contain the `origin` and `destination` columns from input f
 
 ### Sample output
 ```csv
-origin,destination,departure_time,google_travel_time,tt_travel_time,error_percentage
-"52.1849867903527, 0.1809343829904072","52.202817030086266, 0.10935651695330152",2024-05-28 06:00:00+0100,718.0,1050.0,46
-"52.1849867903527, 0.1809343829904072","52.202817030086266, 0.10935651695330152",2024-05-28 09:00:00+0100,1427.0,1262.0,11
-"52.1849867903527, 0.1809343829904072","52.202817030086266, 0.10935651695330152",2024-05-28 12:00:00+0100,1064.0,1165.0,9
-"52.1849867903527, 0.1809343829904072","52.202817030086266, 0.10935651695330152",2024-05-28 15:00:00+0100,1240.0,1287.0,3
-"52.1849867903527, 0.1809343829904072","52.202817030086266, 0.10935651695330152",2024-05-28 18:00:00+0100,1312.0,1223.0,6
-"52.18553917820687, 0.12702050752253252","52.22715259892737, 0.14811674226050345",2024-05-28 06:00:00+0100,749.0,903.0,20
+origin,destination,departure_time,google_travel_time,tomtom_travel_time,tt_travel_time,error_percentage_google,error_percentage_tomtom
+"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 07:00:00+0100,2276.0,2388.0,2071.0,9,13
+"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 10:00:00+0100,2702.0,2578.0,2015.0,25,21
+"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 13:00:00+0100,2622.0,2585.0,2015.0,23,22
+"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 16:00:00+0100,2607.0,2596.0,2130.0,18,17
+"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 19:00:00+0100,2398.0,2431.0,1960.0,18,19
+"50.09814150000003, -5.2586104000000065","50.2165765000003, -5.4758540000000036",2024-09-20 07:00:00+0100,2175.0,2357.0,1861.0,14,21
 ```
 
 ## License
