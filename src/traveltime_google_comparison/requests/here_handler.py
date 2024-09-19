@@ -50,6 +50,11 @@ class HereRequestHandler(BaseRequestHandler):
                 if response.status == 200:
                     first_route = data["routes"][0]
 
+                    if not first_route:
+                        raise HereApiError(
+                            "No route found between origin and destination."
+                        )
+
                     # I think for a simple routing request, there should only be one section. But just in case
                     # I'm taking the sum of all sections
                     total_duration = sum(
@@ -57,12 +62,6 @@ class HereRequestHandler(BaseRequestHandler):
                         for section in first_route["sections"]
                     )
 
-                    if not total_duration:
-                        raise HereApiError(
-                            "No route found between origin and destination."
-                        )
-
-                    print("adsf")
                     return RequestResult(travel_time=total_duration)
                 else:
                     error_message = data.get("detailedError", "")
