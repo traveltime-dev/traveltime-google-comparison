@@ -103,6 +103,8 @@ Optional arguments:
   It is enforced on per-second basis, to avoid bursts.
 - `--mapbox-max-rpm [int]`: Set max number of parallel requests sent to Mapbox API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
+- `--here-max-rpm [int]`: Set max number of parallel requests sent to HERE API per minute. Default is 60.
+  It is enforced on per-second basis, to avoid bursts.
 - `--traveltime-max-rpm [int]`: Set max number of parallel requests sent to TravelTime API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 
