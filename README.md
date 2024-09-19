@@ -7,7 +7,7 @@ Source code is available on [GitHub](https://github.com/traveltime-dev/traveltim
 
 ## Features
 
-- Get travel times from TravelTime API, Google Maps API and TomTom in parallel, for provided origin/destination pairs and a set 
+- Get travel times from TravelTime API, Google Maps API and TomTom API in parallel, for provided origin/destination pairs and a set 
     of departure times.
 - Departure times are calculated based on user provided start time, end time and interval.  
 - Analyze the differences between the results and print out the average error percentage.
