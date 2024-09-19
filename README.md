@@ -2,12 +2,13 @@
 
 This tool compares the travel times obtained from [TravelTime Routes API](https://docs.traveltime.com/api/reference/routes),
 [Google Maps Directions API](https://developers.google.com/maps/documentation/directions/get-directions),
-and [TomTom Routing API](https://developer.tomtom.com/routing-api/documentation/tomtom-maps/routing-service).
+[TomTom Routing API](https://developer.tomtom.com/routing-api/documentation/tomtom-maps/routing-service)
+and [Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/).
 Source code is available on [GitHub](https://github.com/traveltime-dev/traveltime-google-comparison).
 
 ## Features
 
-- Get travel times from TravelTime API, Google Maps API and TomTom API in parallel, for provided origin/destination pairs and a set 
+- Get travel times from TravelTime API, Google Maps API, TomTom API and Mapbox in parallel, for provided origin/destination pairs and a set 
     of departure times.
 - Departure times are calculated based on user provided start time, end time and interval.  
 - Analyze the differences between the results and print out the average error percentage.
