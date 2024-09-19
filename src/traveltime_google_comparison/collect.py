@@ -15,6 +15,7 @@ from traveltime_google_comparison.requests.base_handler import BaseRequestHandle
 
 GOOGLE_API = "google"
 TOMTOM_API = "tomtom"
+MAPBOX_API = "mapbox"
 TRAVELTIME_API = "traveltime"
 
 
@@ -23,6 +24,8 @@ def get_capitalized_provider_name(provider: str) -> str:
         return "Google"
     elif provider == "tomtom":
         return "TomTom"
+    elif provider == "mapbox":
+        return "Mapbox"
     elif provider == "traveltime":
         return "TravelTime"
     else:
@@ -37,6 +40,7 @@ class Fields:
     TRAVEL_TIME = {
         GOOGLE_API: "google_travel_time",
         TOMTOM_API: "tomtom_travel_time",
+        MAPBOX_API: "mapbox_travel_time",
         TRAVELTIME_API: "tt_travel_time",
     }
 
@@ -143,6 +147,7 @@ async def collect_travel_times(
         {
             Fields.TRAVEL_TIME[GOOGLE_API]: "first",
             Fields.TRAVEL_TIME[TOMTOM_API]: "first",
+            Fields.TRAVEL_TIME[MAPBOX_API]: "first",
             Fields.TRAVEL_TIME[TRAVELTIME_API]: "first",
         }
     )

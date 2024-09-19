@@ -48,6 +48,12 @@ For TomTom API:
 export TOMTOM_API_KEY=[Your TomTom API Key]
 ```
 
+For Mapbox API:
+
+```bash
+export MAPBOX_API_KEY=[Your Mapbox API Key]
+```
+
 For TravelTime API:
 ```bash
 export TRAVELTIME_APP_ID=[Your TravelTime App ID]
@@ -87,6 +93,8 @@ Optional arguments:
 - `--google-max-rpm [int]`: Set max number of parallel requests sent to Google API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 - `--tomtom-max-rpm [int]`: Set max number of parallel requests sent to TomTom API per minute. Default is 60.
+  It is enforced on per-second basis, to avoid bursts.
+- `--mapbox-max-rpm [int]`: Set max number of parallel requests sent to Mapbox API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 - `--traveltime-max-rpm [int]`: Set max number of parallel requests sent to TravelTime API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.

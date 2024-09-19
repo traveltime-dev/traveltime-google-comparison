@@ -35,7 +35,7 @@ class MapboxRequestHandler(BaseRequestHandler):
         departure_time: datetime,
         mode: Mode = Mode.DRIVING,
     ) -> RequestResult:
-        route = f"{origin.lng},{origin.lat};{destination.lng},{destination.lat}" # for Mapbox lat/lng are flipped!
+        route = f"{origin.lng},{origin.lat};{destination.lng},{destination.lat}"  # for Mapbox lat/lng are flipped!
         transport_mode = get_mapbox_specific_mode(mode)
         params = {
             "depart_at": departure_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -51,7 +51,7 @@ class MapboxRequestHandler(BaseRequestHandler):
                 data = await response.json()
                 code = data["code"]
                 if code == "Ok":
-                    duration = data['routes'][0]['duration']
+                    duration = data["routes"][0]["duration"]
                     if not duration:
                         raise MapboxApiError(
                             "No route found between origin and destination."

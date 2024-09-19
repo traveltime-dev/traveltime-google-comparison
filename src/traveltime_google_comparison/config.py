@@ -10,10 +10,12 @@ from traveltime_google_comparison.requests.traveltime_credentials import (
 
 DEFAULT_GOOGLE_RPM = 60
 DEFAULT_TOMTOM_RPM = 60
+DEFAULT_MAPBOX_RPM = 60
 DEFAULT_TRAVELTIME_RPM = 60
 
 GOOGLE_API_KEY_VAR_NAME = "GOOGLE_API_KEY"
 TOMTOM_API_KEY_VAR_NAME = "TOMTOM_API_KEY"
+MAPBOX_API_KEY_VAR_NAME = "TOMTOM_API_KEY"
 TRAVELTIME_APP_ID_VAR_NAME = "TRAVELTIME_APP_ID"
 TRAVELTIME_API_KEY_VAR_NAME = "TRAVELTIME_API_KEY"
 
@@ -58,6 +60,13 @@ def parse_args():
         help="Maximum number of requests sent to TomTom API per minute",
     )
     parser.add_argument(
+        "--mapbox-max-rpm",
+        required=False,
+        type=int,
+        default=DEFAULT_MAPBOX_RPM,
+        help="Maximum number of requests sent to Mapbox API per minute",
+    )
+    parser.add_argument(
         "--traveltime-max-rpm",
         required=False,
         type=int,
@@ -90,6 +99,14 @@ def retrieve_tomtom_api_key():
     if not tomtom_api_key:
         raise ValueError(f"{TOMTOM_API_KEY_VAR_NAME} not set in environment variables.")
     return tomtom_api_key
+
+
+def retrieve_mapbox_api_key():
+    mapbox_api_key = os.environ.get(MAPBOX_API_KEY_VAR_NAME)
+
+    if not mapbox_api_key:
+        raise ValueError(f"{MAPBOX_API_KEY_VAR_NAME} not set in environment variables.")
+    return mapbox_api_key
 
 
 def retrieve_traveltime_credentials() -> TravelTimeCredentials:
