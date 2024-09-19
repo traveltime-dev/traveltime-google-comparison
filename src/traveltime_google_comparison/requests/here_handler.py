@@ -78,6 +78,8 @@ def get_here_specific_mode(mode: Mode) -> str:
     if mode == Mode.DRIVING:
         return "car"
     elif mode == Mode.PUBLIC_TRANSPORT:
-        return "bus"
+        return "bus"  # HERE doesn't have a general mode for transit / PT
+        # TODO: figure out how to compare PT modes accorss different providers
+
     else:
         raise ValueError(f"Unsupported mode: `{mode.value}`")
