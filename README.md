@@ -2,13 +2,14 @@
 
 This tool compares the travel times obtained from [TravelTime Routes API](https://docs.traveltime.com/api/reference/routes),
 [Google Maps Directions API](https://developers.google.com/maps/documentation/directions/get-directions),
-[TomTom Routing API](https://developer.tomtom.com/routing-api/documentation/tomtom-maps/routing-service)
+[TomTom Routing API](https://developer.tomtom.com/routing-api/documentation/tomtom-maps/routing-service),
+[HERE Routing API](https://www.here.com/docs/bundle/routing-api-v8-api-reference)
 and [Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/).
 Source code is available on [GitHub](https://github.com/traveltime-dev/traveltime-google-comparison).
 
 ## Features
 
-- Get travel times from TravelTime API, Google Maps API, TomTom API and Mapbox in parallel, for provided origin/destination pairs and a set 
+- Get travel times from TravelTime API, Google Maps API, TomTom API, HERE API and Mapbox API in parallel, for provided origin/destination pairs and a set 
     of departure times.
 - Departure times are calculated based on user provided start time, end time and interval.  
 - Analyze the differences between the results and print out the average error percentage.
@@ -46,6 +47,12 @@ For TomTom API:
 
 ```bash
 export TOMTOM_API_KEY=[Your TomTom API Key]
+```
+
+For HERE API:
+
+```bash
+export HERE_API_KEY=[Your HERE API Key]
 ```
 
 For Mapbox API:
@@ -95,6 +102,8 @@ Optional arguments:
 - `--tomtom-max-rpm [int]`: Set max number of parallel requests sent to TomTom API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 - `--mapbox-max-rpm [int]`: Set max number of parallel requests sent to Mapbox API per minute. Default is 60.
+  It is enforced on per-second basis, to avoid bursts.
+- `--here-max-rpm [int]`: Set max number of parallel requests sent to HERE API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 - `--traveltime-max-rpm [int]`: Set max number of parallel requests sent to TravelTime API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.

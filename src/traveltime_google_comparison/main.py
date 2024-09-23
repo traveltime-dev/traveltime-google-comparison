@@ -7,6 +7,7 @@ from traveltime_google_comparison import collect
 from traveltime_google_comparison import config
 from traveltime_google_comparison.analysis import run_analysis
 from traveltime_google_comparison.collect import (
+    HERE_API,
     MAPBOX_API,
     Fields,
     GOOGLE_API,
@@ -25,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 async def run():
-    providers = [GOOGLE_API, TOMTOM_API, MAPBOX_API]
+    providers = [GOOGLE_API, TOMTOM_API, HERE_API, MAPBOX_API]
     args = config.parse_args()
     csv = pd.read_csv(
         args.input, usecols=[Fields.ORIGIN, Fields.DESTINATION]
@@ -38,6 +39,7 @@ async def run():
     request_handlers = factory.initialize_request_handlers(
         args.google_max_rpm,
         args.tomtom_max_rpm,
+        args.here_max_rpm,
         args.mapbox_max_rpm,
         args.traveltime_max_rpm,
     )
@@ -50,6 +52,7 @@ async def run():
                 Fields.DEPARTURE_TIME,
                 Fields.TRAVEL_TIME[GOOGLE_API],
                 Fields.TRAVEL_TIME[TOMTOM_API],
+                Fields.TRAVEL_TIME[HERE_API],
                 Fields.TRAVEL_TIME[MAPBOX_API],
                 Fields.TRAVEL_TIME[TRAVELTIME_API],
             ],
@@ -61,6 +64,7 @@ async def run():
     filtered_travel_times_df = travel_times_df.loc[
         travel_times_df[Fields.TRAVEL_TIME[GOOGLE_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[TOMTOM_API]].notna()
+        & travel_times_df[Fields.TRAVEL_TIME[HERE_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[MAPBOX_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[TRAVELTIME_API]].notna(),
         :,
