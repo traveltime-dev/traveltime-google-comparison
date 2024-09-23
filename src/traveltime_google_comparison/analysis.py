@@ -46,7 +46,7 @@ def log_results(
 def format_results_for_csv(
     results_with_differences: DataFrame, api_providers: List[str]
 ) -> DataFrame:
-    formatted_results = results_with_differences.copy()
+    formatted_results = results_with_differences.copy().dropna()
 
     for provider in api_providers:
         formatted_results = formatted_results.drop(columns=[absolute_error(provider)])
