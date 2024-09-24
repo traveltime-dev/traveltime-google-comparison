@@ -24,7 +24,7 @@ from traveltime_google_comparison.requests.here_handler import HereRequestHandle
 from traveltime_google_comparison.requests.osrm_handler import OSRMRequestHandler
 from traveltime_google_comparison.requests.mapbox_handler import MapboxRequestHandler
 from traveltime_google_comparison.requests.openroutes_handler import (
-    OpenRoutesRequestHandler
+    OpenRoutesRequestHandler,
 )
 from traveltime_google_comparison.requests.traveltime_handler import (
     TravelTimeRequestHandler,
