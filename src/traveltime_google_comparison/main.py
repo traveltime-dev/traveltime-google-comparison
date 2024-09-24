@@ -8,6 +8,7 @@ from traveltime_google_comparison import config
 from traveltime_google_comparison.analysis import run_analysis
 from traveltime_google_comparison.collect import (
     OSRM_API,
+    OPENROUTES_API,
     HERE_API,
     MAPBOX_API,
     Fields,
@@ -27,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 async def run():
-    providers = [GOOGLE_API, TOMTOM_API, HERE_API, MAPBOX_API, OSRM_API]
+    providers = [GOOGLE_API, TOMTOM_API, HERE_API, MAPBOX_API, OSRM_API, OPENROUTES_API]
     args = config.parse_args()
     csv = pd.read_csv(
         args.input, usecols=[Fields.ORIGIN, Fields.DESTINATION]
@@ -42,6 +43,7 @@ async def run():
         args.tomtom_max_rpm,
         args.here_max_rpm,
         args.osrm_max_rpm,
+        args.openroutes_max_rpm,
         args.mapbox_max_rpm,
         args.traveltime_max_rpm,
     )
@@ -56,6 +58,7 @@ async def run():
                 Fields.TRAVEL_TIME[TOMTOM_API],
                 Fields.TRAVEL_TIME[HERE_API],
                 Fields.TRAVEL_TIME[OSRM_API],
+                Fields.TRAVEL_TIME[OPENROUTES_API],
                 Fields.TRAVEL_TIME[MAPBOX_API],
                 Fields.TRAVEL_TIME[TRAVELTIME_API],
             ],
@@ -69,6 +72,7 @@ async def run():
         & travel_times_df[Fields.TRAVEL_TIME[TOMTOM_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[HERE_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[OSRM_API]].notna()
+        & travel_times_df[Fields.TRAVEL_TIME[OPENROUTES_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[MAPBOX_API]].notna()
         & travel_times_df[Fields.TRAVEL_TIME[TRAVELTIME_API]].notna(),
         :,
