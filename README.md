@@ -4,7 +4,7 @@ This tool compares the travel times obtained from [TravelTime Routes API](https:
 [Google Maps Directions API](https://developers.google.com/maps/documentation/directions/get-directions),
 [TomTom Routing API](https://developer.tomtom.com/routing-api/documentation/tomtom-maps/routing-service),
 [HERE Routing API](https://www.here.com/docs/bundle/routing-api-v8-api-reference),
-[Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/).
+[Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/),
 and [OSRM Routes API](https://project-osrm.org/docs/v5.5.1/api/?language=cURL#route-service).
 Source code is available on [GitHub](https://github.com/traveltime-dev/traveltime-google-comparison).
 
