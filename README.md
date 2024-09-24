@@ -5,6 +5,7 @@ This tool compares the travel times obtained from [TravelTime Routes API](https:
 [TomTom Routing API](https://developer.tomtom.com/routing-api/documentation/tomtom-maps/routing-service),
 [HERE Routing API](https://www.here.com/docs/bundle/routing-api-v8-api-reference),
 [Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/),
+[OpenRoutes API](https://openrouteservice.org/dev/#/api-docs/v2/directions/%7Bprofile%7D/get),
 and [OSRM Routes API](https://project-osrm.org/docs/v5.5.1/api/?language=cURL#route-service).
 Source code is available on [GitHub](https://github.com/traveltime-dev/traveltime-google-comparison).
 
@@ -62,6 +63,12 @@ For Mapbox API:
 export MAPBOX_API_KEY=[Your Mapbox API Key]
 ```
 
+For OpenRoutes API:
+
+```bash
+export OPENROUTES_API_KEY=[Your OpenRoutes API Key]
+```
+
 For OSRM API: OSRM does not require a key.
 
 For TravelTime API:
@@ -108,8 +115,10 @@ Optional arguments:
   It is enforced on per-second basis, to avoid bursts.
 - `--here-max-rpm [int]`: Set max number of parallel requests sent to HERE API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
-- `--osrm-max-rpm [int]`: Set max number of parallel requests sent to HERE API per minute. Default is 60.
+- `--osrm-max-rpm [int]`: Set max number of parallel requests sent to OSRM API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
+- `--openroutes-max-rpm [int]`: Set max number of parallel requests sent to OpenRoutes API per minute. Default is 60.
+    It is enforced on per-second basis, to avoid bursts.
 - `--traveltime-max-rpm [int]`: Set max number of parallel requests sent to TravelTime API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 
@@ -134,17 +143,12 @@ The output file will contain the `origin` and `destination` columns from input f
     It includes date, time and timezone offset.
   - `google_travel_time`: travel time gathered from Google Directions API in seconds
   - `tt_travel_time`: travel time gathered from TravelTime API in seconds
-  - `error_percentage`: relative error between Google and TravelTime travel times in percent, relative to Google result.
+  - `error_percentage_*`: relative error between provider and TravelTime travel times in percent, relative to provider result.
 
 ### Sample output
 ```csv
-origin,destination,departure_time,google_travel_time,tomtom_travel_time,tt_travel_time,error_percentage_google,error_percentage_tomtom
-"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 07:00:00+0100,2276.0,2388.0,2071.0,9,13
-"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 10:00:00+0100,2702.0,2578.0,2015.0,25,21
-"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 13:00:00+0100,2622.0,2585.0,2015.0,23,22
-"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 16:00:00+0100,2607.0,2596.0,2130.0,18,17
-"50.077012199999984, -5.2234787","50.184134100000726, -5.593753699999999",2024-09-20 19:00:00+0100,2398.0,2431.0,1960.0,18,19
-"50.09814150000003, -5.2586104000000065","50.2165765000003, -5.4758540000000036",2024-09-20 07:00:00+0100,2175.0,2357.0,1861.0,14,21
+origin,destination,departure_time,google_travel_time,tomtom_travel_time,here_travel_time,osrm_travel_time,openroutes_travel_time,mapbox_travel_time,tt_travel_time,error_percentage_google,error_percentage_tomtom,error_percentage_here,error_percentage_mapbox,error_percentage_osrm,error_percentage_openroutes
+"52.200400622501455, 0.1082577055247136","52.21614536733819, 0.15782831362961777",2024-09-25 07:00:00+0100,621.0,805.0,614.0,532.0,697.0,1018.0,956.0,53,18,55,6,79,37
 ```
 
 ## License
