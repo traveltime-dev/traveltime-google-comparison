@@ -15,8 +15,7 @@ from traveltime_google_comparison.config import (
     retrieve_mapbox_api_key,
     retrieve_tomtom_api_key,
     retrieve_openroutes_api_key,
-    retrieve_traveltime_credentials,
-    retrieve_openroutes_api_key
+    retrieve_traveltime_credentials
 )
 from traveltime_google_comparison.requests.base_handler import BaseRequestHandler
 from traveltime_google_comparison.requests.google_handler import GoogleRequestHandler
