@@ -42,13 +42,15 @@ class OpenRoutesRequestHandler(BaseRequestHandler):
         }
         try:
             async with aiohttp.ClientSession(
-                    timeout=self.default_timeout
+                timeout=self.default_timeout
             ) as session, session.get(
                 f"{self.OPEN_ROUTES_URL}/{transport_mode}", params=params
             ) as response:
                 data = await response.json()
                 if response.status == 200:
-                    duration = data["features"][0]["properties"]["segments"][0]["duration"]
+                    duration = data["features"][0]["properties"]["segments"][0][
+                        "duration"
+                    ]
                     if not duration:
                         raise OpenRoutesError(
                             "No route found between origin and destination."
