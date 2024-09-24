@@ -25,7 +25,7 @@ class OpenRoutesRequestHandler(BaseRequestHandler):
 
     def __init__(self, api_key, max_rpm):
         self.api_key = api_key
-        self._rate_limiter = AsyncLimiter(max_rpm // 60, 1)
+        self._rate_limiter = AsyncLimiter(max_rpm, 60)
 
     async def send_request(
         self,
