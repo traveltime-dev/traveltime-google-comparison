@@ -12,11 +12,13 @@ DEFAULT_GOOGLE_RPM = 60
 DEFAULT_TOMTOM_RPM = 60
 DEFAULT_HERE_RPM = 60
 DEFAULT_OSRM_RPM = 60
+DEFAULT_OPENROUTES_RPM = 60
 DEFAULT_MAPBOX_RPM = 60
 DEFAULT_TRAVELTIME_RPM = 60
 
 GOOGLE_API_KEY_VAR_NAME = "GOOGLE_API_KEY"
 TOMTOM_API_KEY_VAR_NAME = "TOMTOM_API_KEY"
+OPENROUTES_API_KEY_VAR_NAME = "OPENROUTES_API_KEY"
 HERE_API_KEY_VAR_NAME = "HERE_API_KEY"
 MAPBOX_API_KEY_VAR_NAME = "MAPBOX_API_KEY"
 TRAVELTIME_APP_ID_VAR_NAME = "TRAVELTIME_APP_ID"
@@ -74,7 +76,14 @@ def parse_args():
         required=False,
         type=int,
         default=DEFAULT_OSRM_RPM,
-        help="Maximum number of requests sent to HERE API per minute",
+        help="Maximum number of requests sent to OSRM API per minute",
+    )
+    parser.add_argument(
+        "--openroutes-max-rpm",
+        required=False,
+        type=int,
+        default=DEFAULT_OPENROUTES_RPM,
+        help="Maximum number of requests sent to OpenRoutes API per minute",
     )
     parser.add_argument(
         "--mapbox-max-rpm",
@@ -108,6 +117,14 @@ def retrieve_google_api_key():
     if not google_api_key:
         raise ValueError(f"{GOOGLE_API_KEY_VAR_NAME} not set in environment variables.")
     return google_api_key
+
+
+def retrieve_openroutes_api_key():
+    openroutes_api_key = os.environ.get(OPENROUTES_API_KEY_VAR_NAME)
+
+    if not openroutes_api_key:
+        raise ValueError(f"{OPENROUTES_API_KEY_VAR_NAME} not set in environment variables.")
+    return openroutes_api_key
 
 
 def retrieve_tomtom_api_key():

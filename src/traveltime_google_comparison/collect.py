@@ -19,6 +19,7 @@ HERE_API = "here"
 OSRM_API = "osrm"
 MAPBOX_API = "mapbox"
 TRAVELTIME_API = "traveltime"
+OPENROUTES_API = "openroutes"
 
 
 def get_capitalized_provider_name(provider: str) -> str:
@@ -30,6 +31,8 @@ def get_capitalized_provider_name(provider: str) -> str:
         return "HERE"
     elif provider == "osrm":
         return "OSRM"
+    elif provider == "openroutes":
+        return "OpenRoutes"
     elif provider == "mapbox":
         return "Mapbox"
     elif provider == "traveltime":
@@ -49,6 +52,7 @@ class Fields:
         HERE_API: "here_travel_time",
         OSRM_API: "osrm_travel_time",
         MAPBOX_API: "mapbox_travel_time",
+        OPENROUTES_API: "openroutes_travel_time",
         TRAVELTIME_API: "tt_travel_time",
     }
 
@@ -157,6 +161,7 @@ async def collect_travel_times(
             Fields.TRAVEL_TIME[TOMTOM_API]: "first",
             Fields.TRAVEL_TIME[HERE_API]: "first",
             Fields.TRAVEL_TIME[OSRM_API]: "first",
+            Fields.TRAVEL_TIME[OPENROUTES_API]: "first",
             Fields.TRAVEL_TIME[MAPBOX_API]: "first",
             Fields.TRAVEL_TIME[TRAVELTIME_API]: "first",
         }
