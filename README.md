@@ -3,13 +3,14 @@
 This tool compares the travel times obtained from [TravelTime Routes API](https://docs.traveltime.com/api/reference/routes),
 [Google Maps Directions API](https://developers.google.com/maps/documentation/directions/get-directions),
 [TomTom Routing API](https://developer.tomtom.com/routing-api/documentation/tomtom-maps/routing-service),
-[HERE Routing API](https://www.here.com/docs/bundle/routing-api-v8-api-reference)
-and [Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/).
+[HERE Routing API](https://www.here.com/docs/bundle/routing-api-v8-api-reference),
+[Mapbox Directions API](https://docs.mapbox.com/api/navigation/directions/).
+and [OSRM Routes API](https://project-osrm.org/docs/v5.5.1/api/?language=cURL#route-service).
 Source code is available on [GitHub](https://github.com/traveltime-dev/traveltime-google-comparison).
 
 ## Features
 
-- Get travel times from TravelTime API, Google Maps API, TomTom API, HERE API and Mapbox API in parallel, for provided origin/destination pairs and a set 
+- Get travel times from TravelTime API, Google Maps API, TomTom API, HERE API, Mapbox API and OSRM API in parallel, for provided origin/destination pairs and a set 
     of departure times.
 - Departure times are calculated based on user provided start time, end time and interval.  
 - Analyze the differences between the results and print out the average error percentage.
@@ -61,6 +62,8 @@ For Mapbox API:
 export MAPBOX_API_KEY=[Your Mapbox API Key]
 ```
 
+For OSRM API: OSRM does not require a key.
+
 For TravelTime API:
 ```bash
 export TRAVELTIME_APP_ID=[Your TravelTime App ID]
@@ -104,6 +107,8 @@ Optional arguments:
 - `--mapbox-max-rpm [int]`: Set max number of parallel requests sent to Mapbox API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 - `--here-max-rpm [int]`: Set max number of parallel requests sent to HERE API per minute. Default is 60.
+  It is enforced on per-second basis, to avoid bursts.
+- `--osrm-max-rpm [int]`: Set max number of parallel requests sent to HERE API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
 - `--traveltime-max-rpm [int]`: Set max number of parallel requests sent to TravelTime API per minute. Default is 60.
   It is enforced on per-second basis, to avoid bursts.
