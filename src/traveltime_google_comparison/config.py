@@ -11,6 +11,7 @@ from traveltime_google_comparison.requests.traveltime_credentials import (
 DEFAULT_GOOGLE_RPM = 60
 DEFAULT_TOMTOM_RPM = 60
 DEFAULT_HERE_RPM = 60
+DEFAULT_OSRM_RPM = 60
 DEFAULT_MAPBOX_RPM = 60
 DEFAULT_TRAVELTIME_RPM = 60
 
@@ -66,6 +67,13 @@ def parse_args():
         required=False,
         type=int,
         default=DEFAULT_HERE_RPM,
+        help="Maximum number of requests sent to HERE API per minute",
+    )
+    parser.add_argument(
+        "--osrm-max-rpm",
+        required=False,
+        type=int,
+        default=DEFAULT_OSRM_RPM,
         help="Maximum number of requests sent to HERE API per minute",
     )
     parser.add_argument(
