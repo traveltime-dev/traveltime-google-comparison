@@ -123,7 +123,9 @@ def retrieve_openroutes_api_key():
     openroutes_api_key = os.environ.get(OPENROUTES_API_KEY_VAR_NAME)
 
     if not openroutes_api_key:
-        raise ValueError(f"{OPENROUTES_API_KEY_VAR_NAME} not set in environment variables.")
+        raise ValueError(
+            f"{OPENROUTES_API_KEY_VAR_NAME} not set in environment variables."
+        )
     return openroutes_api_key
 
 
