@@ -31,7 +31,6 @@ class TravelTimeRequestHandler(BaseRequestHandler):
             app_id=app_id, api_key=api_key, user_agent="Travel Time Comparison Tool"
         )
         self._rate_limiter = create_async_limiter(max_rpm)
-        print(self._rate_limiter.max_rate)
 
     async def send_request(
         self,
@@ -45,7 +44,6 @@ class TravelTimeRequestHandler(BaseRequestHandler):
             Location(id=self.DESTINATION_ID, coords=destination),
         ]
         results = None
-        """
         try:
             results = await self.sdk.routes_async(
                 locations=locations,
@@ -72,8 +70,7 @@ class TravelTimeRequestHandler(BaseRequestHandler):
             return RequestResult(None)
 
         properties = results[0].locations[0].properties[0]
-        """
-        return RequestResult(travel_time=30)
+        return RequestResult(travel_time=properties.travel_time)
 
 
 class RouteNotFoundError(Exception):
