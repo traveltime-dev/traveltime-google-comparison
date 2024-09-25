@@ -63,7 +63,8 @@ def parse_args():
             "traveltime",
         ],
         help="""List of providers to use and compare against TravelTime (e.g., --providers google mapbox).
-                Possible options: google, tomtom, here, mapbox, osrm, openroutes. TravelTime is included regardless of input.""",
+                Possible options: google, tomtom, here, mapbox, osrm, openroutes.
+                TravelTime is included regardless of input.""",
     )
     parser.add_argument(
         "--google-max-rpm",
