@@ -62,14 +62,6 @@ class HereRequestHandler(BaseRequestHandler):
                         for section in first_route["sections"]
                     )
 
-                    # For some reason, HERE provider returns 0 duration, 0 length
-                    # for some routes in the mountains, but doesn't indicate anywhere
-                    # that it failed. Returning 0 fails `asType(int)` conversion later.
-                    # Example route in UK where this happens:
-                    # "58.61966879999991, -5.0040819999999995","58.578906999999894, -4.880025099999999"
-                    if total_duration == 0:
-                        return RequestResult(None)
-
                     return RequestResult(travel_time=total_duration)
                 else:
                     error_message = data.get("detailedError", "")
