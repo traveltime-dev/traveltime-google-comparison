@@ -21,13 +21,14 @@ MAPBOX_API = "mapbox"
 TRAVELTIME_API = "traveltime"
 OPENROUTES_API = "openroutes"
 
-ALL_COMPETITORS = [
+ALL_PROVIDERS = [
     GOOGLE_API,
     TOMTOM_API,
     HERE_API,
     MAPBOX_API,
     OSRM_API,
     OPENROUTES_API,
+    TRAVELTIME_API
 ]
 
 

@@ -15,7 +15,7 @@ from traveltime_google_comparison.collect import (
     GOOGLE_API,
     TRAVELTIME_API,
     TOMTOM_API,
-    ALL_COMPETITORS,
+    ALL_PROVIDERS,
 )
 from traveltime_google_comparison.requests import factory
 
@@ -32,7 +32,7 @@ async def run():
     args = config.parse_args()
 
     # Get all providers that should be tested against TravelTime
-    providers = [provider for provider in ALL_COMPETITORS if provider in args.providers]
+    providers = [provider for provider in ALL_PROVIDERS if provider in args.providers]
 
     # TravelTime always should be in the analysis, unless in the future we decide to
     # allow the user to control what is the base for comparison.
