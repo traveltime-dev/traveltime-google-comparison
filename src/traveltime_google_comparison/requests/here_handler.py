@@ -68,7 +68,7 @@ class HereRequestHandler(BaseRequestHandler):
                     # Example route in UK where this happens:
                     # "58.61966879999991, -5.0040819999999995","58.578906999999894, -4.880025099999999"
                     if total_duration == 0:
-                        RequestResult(None)
+                        return RequestResult(None)
 
                     return RequestResult(travel_time=total_duration)
                 else:
