@@ -2,13 +2,13 @@ import logging
 from datetime import datetime
 
 import aiohttp
-from aiolimiter import AsyncLimiter
 from traveltimepy import Coordinates
 
 from traveltime_google_comparison.config import Mode
 from traveltime_google_comparison.requests.base_handler import (
     BaseRequestHandler,
     RequestResult,
+    create_async_limiter,
 )
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ class GoogleRequestHandler(BaseRequestHandler):
 
     def __init__(self, api_key, max_rpm):
         self.api_key = api_key
-        self._rate_limiter = AsyncLimiter(max_rpm // 60, 1)
+        self._rate_limiter = create_async_limiter(max_rpm)
 
     async def send_request(
         self,
