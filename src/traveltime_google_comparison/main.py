@@ -7,14 +7,8 @@ from traveltime_google_comparison import collect
 from traveltime_google_comparison import config
 from traveltime_google_comparison.analysis import run_analysis
 from traveltime_google_comparison.collect import (
-    OSRM_API,
-    OPENROUTES_API,
-    HERE_API,
-    MAPBOX_API,
     Fields,
-    GOOGLE_API,
     TRAVELTIME_API,
-    TOMTOM_API,
     ALL_PROVIDERS,
 )
 from traveltime_google_comparison.requests import factory
