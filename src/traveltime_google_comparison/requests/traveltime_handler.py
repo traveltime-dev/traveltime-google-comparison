@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Union
 import logging
 
-from aiolimiter import AsyncLimiter
 from traveltimepy import (
     Location,
     Coordinates,
@@ -17,6 +16,7 @@ from traveltime_google_comparison.config import Mode
 from traveltime_google_comparison.requests.base_handler import (
     BaseRequestHandler,
     RequestResult,
+    create_async_limiter,
 )
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class TravelTimeRequestHandler(BaseRequestHandler):
         self.sdk = TravelTimeSdk(
             app_id=app_id, api_key=api_key, user_agent="Travel Time Comparison Tool"
         )
-        self._rate_limiter = AsyncLimiter(max_rpm // 60, 1)
+        self._rate_limiter = create_async_limiter(max_rpm)
 
     async def send_request(
         self,
