@@ -15,6 +15,7 @@ from traveltime_google_comparison.collect import (
     GOOGLE_API,
     TRAVELTIME_API,
     TOMTOM_API,
+    ALL_COMPETITORS,
 )
 from traveltime_google_comparison.requests import factory
 
@@ -28,8 +29,16 @@ logger = logging.getLogger(__name__)
 
 
 async def run():
-    providers = [GOOGLE_API, TOMTOM_API, HERE_API, MAPBOX_API, OSRM_API, OPENROUTES_API]
     args = config.parse_args()
+
+    # Get all providers that should be tested against TravelTime
+    providers = [provider for provider in ALL_COMPETITORS if provider in args.providers]
+
+    # TravelTime always should be in the analysis, unless in the future we decide to
+    # allow the user to control what is the base for comparison.
+    if TRAVELTIME_API not in providers:
+        providers.append(TRAVELTIME_API)
+
     csv = pd.read_csv(
         args.input, usecols=[Fields.ORIGIN, Fields.DESTINATION]
     ).drop_duplicates()
@@ -38,15 +47,7 @@ async def run():
         logger.info("Provided input file is empty. Exiting.")
         return
 
-    request_handlers = factory.initialize_request_handlers(
-        args.google_max_rpm,
-        args.tomtom_max_rpm,
-        args.here_max_rpm,
-        args.osrm_max_rpm,
-        args.openroutes_max_rpm,
-        args.mapbox_max_rpm,
-        args.traveltime_max_rpm,
-    )
+    request_handlers = factory.initialize_request_handlers(providers, args)
     if args.skip_data_gathering:
         travel_times_df = pd.read_csv(
             args.input,
@@ -54,27 +55,18 @@ async def run():
                 Fields.ORIGIN,
                 Fields.DESTINATION,
                 Fields.DEPARTURE_TIME,
-                Fields.TRAVEL_TIME[GOOGLE_API],
-                Fields.TRAVEL_TIME[TOMTOM_API],
-                Fields.TRAVEL_TIME[HERE_API],
-                Fields.TRAVEL_TIME[OSRM_API],
-                Fields.TRAVEL_TIME[OPENROUTES_API],
-                Fields.TRAVEL_TIME[MAPBOX_API],
-                Fields.TRAVEL_TIME[TRAVELTIME_API],
-            ],
+            ]  # base fields
+            + [Fields.TRAVEL_TIME[provider] for provider in providers],  # all providers
         )
     else:
         travel_times_df = await collect.collect_travel_times(
             args, csv, request_handlers, providers
         )
+
     filtered_travel_times_df = travel_times_df.loc[
-        travel_times_df[Fields.TRAVEL_TIME[GOOGLE_API]].notna()
-        & travel_times_df[Fields.TRAVEL_TIME[TOMTOM_API]].notna()
-        & travel_times_df[Fields.TRAVEL_TIME[HERE_API]].notna()
-        & travel_times_df[Fields.TRAVEL_TIME[OSRM_API]].notna()
-        & travel_times_df[Fields.TRAVEL_TIME[OPENROUTES_API]].notna()
-        & travel_times_df[Fields.TRAVEL_TIME[MAPBOX_API]].notna()
-        & travel_times_df[Fields.TRAVEL_TIME[TRAVELTIME_API]].notna(),
+        travel_times_df[[Fields.TRAVEL_TIME[provider] for provider in providers]]
+        .notna()
+        .all(axis=1),
         :,
     ]
 

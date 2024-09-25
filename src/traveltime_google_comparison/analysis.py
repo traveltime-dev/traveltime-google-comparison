@@ -61,12 +61,18 @@ def format_results_for_csv(
 def run_analysis(
     results: DataFrame, output_file: str, quantile: float, api_providers: List[str]
 ):
-    results_with_differences = calculate_differences(results, api_providers)
-    log_results(results_with_differences, quantile, api_providers)
+    providers_without_traveltime = [p for p in api_providers if p != TRAVELTIME_API]
+
+    results_with_differences = calculate_differences(
+        results, providers_without_traveltime
+    )
+    log_results(results_with_differences, quantile, providers_without_traveltime)
 
     logging.info(f"Detailed results can be found in {output_file} file")
 
-    formatted_results = format_results_for_csv(results_with_differences, api_providers)
+    formatted_results = format_results_for_csv(
+        results_with_differences, providers_without_traveltime
+    )
 
     formatted_results.to_csv(output_file, index=False)
 

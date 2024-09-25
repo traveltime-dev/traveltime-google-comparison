@@ -21,6 +21,15 @@ MAPBOX_API = "mapbox"
 TRAVELTIME_API = "traveltime"
 OPENROUTES_API = "openroutes"
 
+ALL_COMPETITORS = [
+    GOOGLE_API,
+    TOMTOM_API,
+    HERE_API,
+    MAPBOX_API,
+    OSRM_API,
+    OPENROUTES_API,
+]
+
 
 def get_capitalized_provider_name(provider: str) -> str:
     if provider == "google":
@@ -146,26 +155,14 @@ async def collect_travel_times(
     capitalized_providers_str = ", ".join(
         [get_capitalized_provider_name(provider) for provider in providers]
     )
-    logger.info(
-        f"Sending {len(tasks)} requests to {capitalized_providers_str} and TravelTime APIs"
-    )
+    logger.info(f"Sending {len(tasks)} requests to {capitalized_providers_str} APIs")
 
     results = await asyncio.gather(*tasks)
 
     results_df = pd.DataFrame(results)
     deduplicated = results_df.groupby(
         [Fields.ORIGIN, Fields.DESTINATION, Fields.DEPARTURE_TIME], as_index=False
-    ).agg(
-        {
-            Fields.TRAVEL_TIME[GOOGLE_API]: "first",
-            Fields.TRAVEL_TIME[TOMTOM_API]: "first",
-            Fields.TRAVEL_TIME[HERE_API]: "first",
-            Fields.TRAVEL_TIME[OSRM_API]: "first",
-            Fields.TRAVEL_TIME[OPENROUTES_API]: "first",
-            Fields.TRAVEL_TIME[MAPBOX_API]: "first",
-            Fields.TRAVEL_TIME[TRAVELTIME_API]: "first",
-        }
-    )
+    ).agg({Fields.TRAVEL_TIME[provider]: "first" for provider in providers})
     deduplicated.to_csv(args.output, index=False)
     return deduplicated
 

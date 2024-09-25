@@ -35,7 +35,7 @@ class Mode(Enum):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Fetch and compare travel times from Google Directions API and TravelTime Routes API"
+        description="Fetch and compare travel times from TravelTime Routes API and it's competitors"
     )
     parser.add_argument("--input", required=True, help="Input CSV file path")
     parser.add_argument("--output", required=True, help="Output CSV file path")
@@ -49,6 +49,21 @@ def parse_args():
         "--time-zone-id",
         required=True,
         help="Non-abbreviated time zone identifier e.g. Europe/London",
+    )
+    parser.add_argument(
+        "--providers",
+        nargs="+",
+        default=[
+            "google",
+            "tomtom",
+            "here",
+            "mapbox",
+            "osrm",
+            "openroutes",
+            "traveltime",
+        ],
+        help="""List of providers to use and compare against TravelTime (e.g., --providers google mapbox).
+                Possible options: google, tomtom, here, mapbox, osrm, openroutes]. TravelTime is included by default""",
     )
     parser.add_argument(
         "--google-max-rpm",
