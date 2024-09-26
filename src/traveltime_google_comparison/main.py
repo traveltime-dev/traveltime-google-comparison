@@ -11,7 +11,7 @@ from traveltime_google_comparison.collect import Fields
 from traveltime_google_comparison.requests import factory
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )

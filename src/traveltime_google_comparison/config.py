@@ -112,7 +112,7 @@ def parse_json_to_providers(json_data: str) -> Providers:
 
     if len(competitors) == 0:
         raise ValueError(
-            "There should be at least one enabled API provider that's not TravelTime"
+            "There should be at least one enabled API provider that's not TravelTime."
         )
 
     return Providers(base=base_provider, competitors=competitors)
