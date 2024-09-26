@@ -1,4 +1,3 @@
-from argparse import Namespace
 from typing import Dict
 
 from traveltime_google_comparison.collect import (
