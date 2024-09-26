@@ -13,6 +13,7 @@ from traveltimepy import Coordinates
 from traveltime_google_comparison.config import Mode
 from traveltime_google_comparison.requests.base_handler import BaseRequestHandler
 
+
 GOOGLE_API = "google"
 TOMTOM_API = "tomtom"
 HERE_API = "here"
@@ -20,16 +21,6 @@ OSRM_API = "osrm"
 MAPBOX_API = "mapbox"
 TRAVELTIME_API = "traveltime"
 OPENROUTES_API = "openroutes"
-
-ALL_PROVIDERS = [
-    GOOGLE_API,
-    TOMTOM_API,
-    HERE_API,
-    MAPBOX_API,
-    OSRM_API,
-    OPENROUTES_API,
-    TRAVELTIME_API,
-]
 
 
 def get_capitalized_provider_name(provider: str) -> str:
@@ -142,7 +133,10 @@ def generate_tasks(
 
 
 async def collect_travel_times(
-    args, data, request_handlers: Dict[str, BaseRequestHandler], providers: List[str]
+    args,
+    data,
+    request_handlers: Dict[str, BaseRequestHandler],
+    provider_names: List[str],
 ) -> DataFrame:
     timezone = pytz.timezone(args.time_zone_id)
     localized_start_datetime = localize_datetime(args.date, args.start_time, timezone)
@@ -154,7 +148,7 @@ async def collect_travel_times(
     tasks = generate_tasks(data, time_instants, request_handlers, mode=Mode.DRIVING)
 
     capitalized_providers_str = ", ".join(
-        [get_capitalized_provider_name(provider) for provider in providers]
+        [get_capitalized_provider_name(provider) for provider in provider_names]
     )
     logger.info(f"Sending {len(tasks)} requests to {capitalized_providers_str} APIs")
 
@@ -163,7 +157,7 @@ async def collect_travel_times(
     results_df = pd.DataFrame(results)
     deduplicated = results_df.groupby(
         [Fields.ORIGIN, Fields.DESTINATION, Fields.DEPARTURE_TIME], as_index=False
-    ).agg({Fields.TRAVEL_TIME[provider]: "first" for provider in providers})
+    ).agg({Fields.TRAVEL_TIME[provider]: "first" for provider in provider_names})
     deduplicated.to_csv(args.output, index=False)
     return deduplicated
 
