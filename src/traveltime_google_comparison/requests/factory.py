@@ -9,14 +9,7 @@ from traveltime_google_comparison.collect import (
     GOOGLE_API,
     OPENROUTES_API,
 )
-from traveltime_google_comparison.config import (
-    retrieve_google_api_key,
-    retrieve_here_api_key,
-    retrieve_mapbox_api_key,
-    retrieve_tomtom_api_key,
-    retrieve_openroutes_api_key,
-    retrieve_traveltime_credentials,
-)
+from traveltime_google_comparison.config import Provider, Providers
 from traveltime_google_comparison.requests.base_handler import BaseRequestHandler
 from traveltime_google_comparison.requests.google_handler import GoogleRequestHandler
 from traveltime_google_comparison.requests.tomtom_handler import TomTomRequestHandler
@@ -31,31 +24,45 @@ from traveltime_google_comparison.requests.traveltime_handler import (
 )
 
 
-def initialize_request_handlers(
-    google_max_rpm,
-    tomtom_max_rpm,
-    here_max_rpm,
-    osrm_max_rpm,
-    openroutes_max_rpm,
-    mapbox_max_rpm,
-    traveltime_max_rpm,
-) -> Dict[str, BaseRequestHandler]:
-    google_api_key = retrieve_google_api_key()
-    tomtom_api_key = retrieve_tomtom_api_key()
-    here_api_key = retrieve_here_api_key()
-    mapbox_api_key = retrieve_mapbox_api_key()
-    openroutes_api_key = retrieve_openroutes_api_key()
-    credentials = retrieve_traveltime_credentials()
-    return {
-        GOOGLE_API: GoogleRequestHandler(google_api_key, google_max_rpm),
-        TOMTOM_API: TomTomRequestHandler(tomtom_api_key, tomtom_max_rpm),
-        HERE_API: HereRequestHandler(here_api_key, here_max_rpm),
-        OSRM_API: OSRMRequestHandler("", osrm_max_rpm),
-        OPENROUTES_API: OpenRoutesRequestHandler(
-            openroutes_api_key, openroutes_max_rpm
-        ),
-        MAPBOX_API: MapboxRequestHandler(mapbox_api_key, mapbox_max_rpm),
-        TRAVELTIME_API: TravelTimeRequestHandler(
-            credentials.app_id, credentials.api_key, traveltime_max_rpm
-        ),
+def initialize_request_handlers(providers: Providers) -> Dict[str, BaseRequestHandler]:
+    def create_google_handler(provider: Provider):
+        return GoogleRequestHandler(provider.credentials.api_key, provider.max_rpm)
+
+    def create_tomtom_handler(provider: Provider):
+        return TomTomRequestHandler(provider.credentials.api_key, provider.max_rpm)
+
+    def create_here_handler(provider: Provider):
+        return HereRequestHandler(provider.credentials.api_key, provider.max_rpm)
+
+    def create_osrm_handler(provider: Provider):
+        return OSRMRequestHandler("", provider.max_rpm)
+
+    def create_openroutes_handler(provider: Provider):
+        return OpenRoutesRequestHandler(provider.credentials.api_key, provider.max_rpm)
+
+    def create_mapbox_handler(provider: Provider):
+        return MapboxRequestHandler(provider.credentials.api_key, provider.max_rpm)
+
+    def create_traveltime_handler(provider: Provider):
+        return TravelTimeRequestHandler(
+            provider.credentials.app_id, provider.credentials.api_key, provider.max_rpm
+        )
+
+    handler_mapping = {
+        GOOGLE_API: create_google_handler,
+        TOMTOM_API: create_tomtom_handler,
+        HERE_API: create_here_handler,
+        OSRM_API: create_osrm_handler,
+        OPENROUTES_API: create_openroutes_handler,
+        MAPBOX_API: create_mapbox_handler,
     }
+
+    handlers = {}
+    for competitor in providers.competitors:
+        if competitor.name in handler_mapping:
+            handlers[competitor.name] = handler_mapping[competitor.name](competitor)
+
+    # Always add TRAVELTIME_API handler
+    handlers[TRAVELTIME_API] = create_traveltime_handler(providers.base)
+
+    return handlers

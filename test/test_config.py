@@ -1,54 +1,106 @@
 import pytest
 
 from traveltime_google_comparison.config import (
-    TRAVELTIME_APP_ID_VAR_NAME,
-    TRAVELTIME_API_KEY_VAR_NAME,
-    retrieve_traveltime_credentials,
+    Provider,
+    Providers,
+    parse_json_to_providers,
 )
 from traveltime_google_comparison.requests.traveltime_credentials import (
-    TravelTimeCredentials,
+    Credentials,
 )
 
 
-def test_retrieve_traveltime_credentials_valid(monkeypatch):
-    monkeypatch.setenv(TRAVELTIME_APP_ID_VAR_NAME, "sample_app_id")
-    monkeypatch.setenv(TRAVELTIME_API_KEY_VAR_NAME, "sample_api_key")
+def test_json_config_parse():
+    json = """
+        {
+          "traveltime": {
+            "app-id": "<your-app-id>",
+            "api-key": "<your-api-key>",
+            "max-rpm": "60"
+          },
+          "api-providers": [
+            {
+              "name": "google",
+              "enabled": true,
+              "api-key": "<your-api-key>",
+              "max-rpm": "60"
+            },
+            {
+              "name": "tomtom",
+              "enabled": false,
+              "api-key": "<your-api-key>",
+              "max-rpm": "30"
+            }
+          ]
+        }
+    """
 
-    credentials = retrieve_traveltime_credentials()
+    providers = parse_json_to_providers(json)
 
-    assert isinstance(credentials, TravelTimeCredentials)
-    assert credentials.app_id == "sample_app_id"
-    assert credentials.api_key == "sample_api_key"
-
-
-def test_retrieve_traveltime_credentials_missing_app_id(monkeypatch):
-    monkeypatch.delenv(TRAVELTIME_APP_ID_VAR_NAME, raising=False)
-    monkeypatch.setenv(TRAVELTIME_API_KEY_VAR_NAME, "sample_api_key")
-
-    with pytest.raises(
-        ValueError,
-        match="TravelTime API credentials are missing from environment variables.",
-    ):
-        retrieve_traveltime_credentials()
+    assert providers == Providers(
+        base=Provider(
+            name="traveltime",
+            max_rpm=60,
+            credentials=Credentials(app_id="<your-app-id>", api_key="<your-api-key>"),
+        ),
+        competitors=[
+            Provider(
+                name="google", max_rpm=60, credentials=Credentials("<your-api-key>")
+            )
+        ],
+    )
 
 
-def test_retrieve_traveltime_credentials_missing_api_key(monkeypatch):
-    monkeypatch.setenv(TRAVELTIME_APP_ID_VAR_NAME, "sample_app_id")
-    monkeypatch.delenv(TRAVELTIME_API_KEY_VAR_NAME, raising=False)
+def test_json_config_parse_all_disabled_providers():
+    json = """
+        {
+          "traveltime": {
+            "app-id": "<your-app-id>",
+            "api-key": "<your-api-key>",
+            "max-rpm": "60"
+          },
+          "api-providers": [
+            {
+              "name": "google",
+              "enabled": false,
+              "api-key": "<your-api-key>",
+              "max-rpm": "60"
+            },
+            {
+              "name": "tomtom",
+              "enabled": false,
+              "api-key": "<your-api-key>",
+              "max-rpm": "30"
+            }
+          ]
+        }
+    """
 
-    with pytest.raises(
-        ValueError,
-        match="TravelTime API credentials are missing from environment variables.",
-    ):
-        retrieve_traveltime_credentials()
+    with pytest.raises(ValueError) as excinfo:
+        _ = parse_json_to_providers(json)
+
+    assert (
+        str(excinfo.value)
+        == "There should be at least one enabled API provider that's not TravelTime."
+    )
 
 
-def test_retrieve_traveltime_credentials_missing_both(monkeypatch):
-    monkeypatch.delenv(TRAVELTIME_APP_ID_VAR_NAME, raising=False)
-    monkeypatch.delenv(TRAVELTIME_API_KEY_VAR_NAME, raising=False)
+def test_json_config_parse_empty_providers():
+    json = """
+        {
+          "traveltime": {
+            "app-id": "<your-app-id>",
+            "api-key": "<your-api-key>",
+            "max-rpm": "60"
+          },
+          "api-providers": []
+        }
+    """
 
-    with pytest.raises(
-        ValueError,
-        match="TravelTime API credentials are missing from environment variables.",
-    ):
-        retrieve_traveltime_credentials()
+    with pytest.raises(ValueError) as excinfo:
+        _ = parse_json_to_providers(json)
+
+    assert (
+        str(excinfo.value)
+        == "There should be at least one enabled API provider that's not TravelTime."
+    )

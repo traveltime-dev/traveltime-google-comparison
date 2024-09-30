@@ -13,6 +13,7 @@ from traveltimepy import Coordinates
 from traveltime_google_comparison.config import Mode
 from traveltime_google_comparison.requests.base_handler import BaseRequestHandler
 
+
 GOOGLE_API = "google"
 TOMTOM_API = "tomtom"
 HERE_API = "here"
@@ -132,7 +133,10 @@ def generate_tasks(
 
 
 async def collect_travel_times(
-    args, data, request_handlers: Dict[str, BaseRequestHandler], providers: List[str]
+    args,
+    data,
+    request_handlers: Dict[str, BaseRequestHandler],
+    provider_names: List[str],
 ) -> DataFrame:
     timezone = pytz.timezone(args.time_zone_id)
     localized_start_datetime = localize_datetime(args.date, args.start_time, timezone)
@@ -144,28 +148,16 @@ async def collect_travel_times(
     tasks = generate_tasks(data, time_instants, request_handlers, mode=Mode.DRIVING)
 
     capitalized_providers_str = ", ".join(
-        [get_capitalized_provider_name(provider) for provider in providers]
+        [get_capitalized_provider_name(provider) for provider in provider_names]
     )
-    logger.info(
-        f"Sending {len(tasks)} requests to {capitalized_providers_str} and TravelTime APIs"
-    )
+    logger.info(f"Sending {len(tasks)} requests to {capitalized_providers_str} APIs")
 
     results = await asyncio.gather(*tasks)
 
     results_df = pd.DataFrame(results)
     deduplicated = results_df.groupby(
         [Fields.ORIGIN, Fields.DESTINATION, Fields.DEPARTURE_TIME], as_index=False
-    ).agg(
-        {
-            Fields.TRAVEL_TIME[GOOGLE_API]: "first",
-            Fields.TRAVEL_TIME[TOMTOM_API]: "first",
-            Fields.TRAVEL_TIME[HERE_API]: "first",
-            Fields.TRAVEL_TIME[OSRM_API]: "first",
-            Fields.TRAVEL_TIME[OPENROUTES_API]: "first",
-            Fields.TRAVEL_TIME[MAPBOX_API]: "first",
-            Fields.TRAVEL_TIME[TRAVELTIME_API]: "first",
-        }
-    )
+    ).agg({Fields.TRAVEL_TIME[provider]: "first" for provider in provider_names})
     deduplicated.to_csv(args.output, index=False)
     return deduplicated
 

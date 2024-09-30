@@ -1,0 +1,45 @@
+{
+  "traveltime": {
+    "app-id": "<your-app-id>",
+    "api-key": "<your-api-key>",
+    "max-rpm": "60"
+  },
+  "api-providers": [
+    {
+      "name": "google",
+      "enabled": true,
+      "api-key": "<your-api-key>",
+      "max-rpm": "60"
+    },
+    {
+      "name": "tomtom",
+      "enabled": true,
+      "api-key": "<your-api-key>",
+      "max-rpm": "60"
+    },
+    {
+      "name": "here",
+      "enabled": true,
+      "api-key": "<your-api-key>",
+      "max-rpm": "60"
+    },
+    {
+      "name": "mapbox",
+      "enabled": true,
+      "api-key": "<your-api-key>",
+      "max-rpm": "60"
+    },
+    {
+      "name": "osrm",
+      "enabled": true,
+      "api-key": "not-needed!",
+      "max-rpm": "60"
+    },
+    {
+      "name": "openroutes",
+      "enabled": true,
+      "api-key": "<your-api-key>",
+      "max-rpm": "20"
+    }
+  ]
+}

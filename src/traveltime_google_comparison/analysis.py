@@ -1,6 +1,5 @@
 import logging
 from dataclasses import dataclass
-from typing import List
 
 from pandas import DataFrame
 
@@ -9,6 +8,7 @@ from traveltime_google_comparison.collect import (
     TRAVELTIME_API,
     get_capitalized_provider_name,
 )
+from traveltime_google_comparison.config import Providers
 
 
 def absolute_error(api_provider: str) -> str:
@@ -26,17 +26,16 @@ class QuantileErrorResult:
 
 
 def log_results(
-    results_with_differences: DataFrame, quantile: float, api_providers: List[str]
+    results_with_differences: DataFrame, quantile: float, api_providers: Providers
 ):
-    for provider in api_providers:
-        capitalized_provider = get_capitalized_provider_name(provider)
+    for provider in api_providers.competitors:
+        name = provider.name
+        capitalized_provider = get_capitalized_provider_name(name)
         logging.info(
             f"Mean relative error compared to {capitalized_provider} "
-            f"API: {results_with_differences[relative_error(provider)].mean():.2f}%"
+            f"API: {results_with_differences[relative_error(name)].mean():.2f}%"
         )
-        quantile_errors = calculate_quantiles(
-            results_with_differences, quantile, provider
-        )
+        quantile_errors = calculate_quantiles(results_with_differences, quantile, name)
         logging.info(
             f"{int(quantile * 100)}% of TravelTime results differ from {capitalized_provider} API "
             f"by less than {int(quantile_errors.relative_error)}%"
@@ -44,13 +43,14 @@ def log_results(
 
 
 def format_results_for_csv(
-    results_with_differences: DataFrame, api_providers: List[str]
+    results_with_differences: DataFrame, api_providers: Providers
 ) -> DataFrame:
     formatted_results = results_with_differences.copy()
 
-    for provider in api_providers:
-        formatted_results = formatted_results.drop(columns=[absolute_error(provider)])
-        relative_error_col = relative_error(provider)
+    for provider in api_providers.competitors:
+        name = provider.name
+        formatted_results = formatted_results.drop(columns=[absolute_error(name)])
+        relative_error_col = relative_error(name)
         formatted_results[relative_error_col] = formatted_results[
             relative_error_col
         ].astype(int)
@@ -59,7 +59,7 @@ def format_results_for_csv(
 
 
 def run_analysis(
-    results: DataFrame, output_file: str, quantile: float, api_providers: List[str]
+    results: DataFrame, output_file: str, quantile: float, api_providers: Providers
 ):
     results_with_differences = calculate_differences(results, api_providers)
     log_results(results_with_differences, quantile, api_providers)
@@ -71,21 +71,22 @@ def run_analysis(
     formatted_results.to_csv(output_file, index=False)
 
 
-def calculate_differences(results: DataFrame, api_providers: List[str]) -> DataFrame:
+def calculate_differences(results: DataFrame, api_providers: Providers) -> DataFrame:
     results_with_differences = results.copy()
 
-    for provider in api_providers:
-        absolute_error_col = absolute_error(provider)
-        relative_error_col = relative_error(provider)
+    for provider in api_providers.competitors:
+        name = provider.name
+        absolute_error_col = absolute_error(name)
+        relative_error_col = relative_error(name)
 
         results_with_differences[absolute_error_col] = abs(
-            results[Fields.TRAVEL_TIME[provider]]
+            results[Fields.TRAVEL_TIME[name]]
             - results[Fields.TRAVEL_TIME[TRAVELTIME_API]]
         )
 
         results_with_differences[relative_error_col] = (
             results_with_differences[absolute_error_col]
-            / results_with_differences[Fields.TRAVEL_TIME[provider]]
+            / results_with_differences[Fields.TRAVEL_TIME[name]]
             * 100
         )
 
@@ -95,13 +96,13 @@ def calculate_differences(results: DataFrame, api_providers: List[str]) -> DataF
 def calculate_quantiles(
     results_with_differences: DataFrame,
     quantile: float,
-    api_provider: str,
+    api_provider_name: str,
 ) -> QuantileErrorResult:
     quantile_absolute_error = results_with_differences[
-        absolute_error(api_provider)
+        absolute_error(api_provider_name)
     ].quantile(quantile, "higher")
     quantile_relative_error = results_with_differences[
-        relative_error(api_provider)
+        relative_error(api_provider_name)
     ].quantile(quantile, "higher")
     return QuantileErrorResult(
         int(quantile_absolute_error), int(quantile_relative_error)

@@ -37,44 +37,26 @@ pip install traveltime-google-comparison
 ```
 
 ## Setup
-Provide credentials for the APIs via environment variables.
+Provide credentials and desired max requests per minute for the APIs inside the `config.json` file.
+You can also disable unwanted APIs by changing the `enabled` value to `false`.
 
-For Google Maps API:
-
-```bash
-export GOOGLE_API_KEY=[Your Google Maps API Key]
-```
-
-For TomTom API:
-
-```bash
-export TOMTOM_API_KEY=[Your TomTom API Key]
-```
-
-For HERE API:
-
-```bash
-export HERE_API_KEY=[Your HERE API Key]
-```
-
-For Mapbox API:
-
-```bash
-export MAPBOX_API_KEY=[Your Mapbox API Key]
-```
-
-For OpenRoutes API:
-
-```bash
-export OPENROUTES_API_KEY=[Your OpenRoutes API Key]
-```
-
-For OSRM API: OSRM does not require a key.
-
-For TravelTime API:
-```bash
-export TRAVELTIME_APP_ID=[Your TravelTime App ID]
-export TRAVELTIME_API_KEY=[Your TravelTime API Key]
+```json
+{
+  "traveltime": {
+    "app-id": "<your-app-id>",
+    "api-key": "<your-api-key>",
+    "max-rpm": "60"
+  },
+  "api-providers": [
+    {
+      "name": "google",
+      "enabled": true,
+      "api-key": "<your-api-key>",
+      "max-rpm": "60"
+    },
+    ...other providers
+  ]
+}
 ```
 
 ## Usage
@@ -104,23 +86,8 @@ Required arguments:
 - `--time-zone-id [Time zone ID]`: non-abbreviated time zone identifier in which the time values are specified. 
   For example: `Europe/London`. For more information, see [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
-
-
 Optional arguments:
-- `--google-max-rpm [int]`: Set max number of parallel requests sent to Google API per minute. Default is 60.
-  It is enforced on per-second basis, to avoid bursts.
-- `--tomtom-max-rpm [int]`: Set max number of parallel requests sent to TomTom API per minute. Default is 60.
-  It is enforced on per-second basis, to avoid bursts.
-- `--mapbox-max-rpm [int]`: Set max number of parallel requests sent to Mapbox API per minute. Default is 60.
-  It is enforced on per-second basis, to avoid bursts.
-- `--here-max-rpm [int]`: Set max number of parallel requests sent to HERE API per minute. Default is 60.
-  It is enforced on per-second basis, to avoid bursts.
-- `--osrm-max-rpm [int]`: Set max number of parallel requests sent to OSRM API per minute. Default is 60.
-  It is enforced on per-second basis, to avoid bursts.
-- `--openroutes-max-rpm [int]`: Set max number of parallel requests sent to OpenRoutes API per minute. Default is 60.
-    It is enforced on per-second basis, to avoid bursts.
-- `--traveltime-max-rpm [int]`: Set max number of parallel requests sent to TravelTime API per minute. Default is 60.
-  It is enforced on per-second basis, to avoid bursts.
+- `--config [Config file path]`: Path to the config file. Default - ./config.json
 
 Example:
 

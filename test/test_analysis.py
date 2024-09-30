@@ -7,9 +7,22 @@ from traveltime_google_comparison.analysis import (
     relative_error,
 )
 from traveltime_google_comparison.collect import GOOGLE_API, TRAVELTIME_API, Fields
+from traveltime_google_comparison.config import Provider, Providers
+from traveltime_google_comparison.requests.traveltime_credentials import (
+    Credentials,
+)
 
 ABSOLUTE_ERROR_GOOGLE = absolute_error(GOOGLE_API)
 RELATIVE_ERROR_GOOGLE = relative_error(GOOGLE_API)
+
+PROVIDERS = Providers(
+    base=Provider(
+        name="traveltime",
+        max_rpm=60,
+        credentials=Credentials(app_id="test", api_key="test"),
+    ),
+    competitors=[Provider(name="google", max_rpm=60, credentials=Credentials("test"))],
+)
 
 
 def test_calculate_differences_calculate_absolute_and_relative_differences():
@@ -18,7 +31,7 @@ def test_calculate_differences_calculate_absolute_and_relative_differences():
         Fields.TRAVEL_TIME[TRAVELTIME_API]: [90, 210, 290],
     }
     df = pd.DataFrame(data)
-    result_df = calculate_differences(df, [GOOGLE_API])
+    result_df = calculate_differences(df, PROVIDERS)
 
     assert result_df[ABSOLUTE_ERROR_GOOGLE].tolist() == [10, 10, 10]
     assert result_df[RELATIVE_ERROR_GOOGLE].tolist() == [10.0, 5.0, 10.0 / 3]
@@ -30,7 +43,7 @@ def test_calculate_differences_survives_division_by_zero():
         Fields.TRAVEL_TIME[TRAVELTIME_API]: [90, 210, 290],
     }
     df = pd.DataFrame(data)
-    result_df = calculate_differences(df, [GOOGLE_API])
+    result_df = calculate_differences(df, PROVIDERS)
 
     assert result_df[ABSOLUTE_ERROR_GOOGLE].tolist() == [90, 10, 10]
     assert result_df[RELATIVE_ERROR_GOOGLE].tolist() == [float("inf"), 5.0, 10.0 / 3]

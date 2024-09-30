@@ -1,11 +1,13 @@
 import argparse
-import os
+from dataclasses import dataclass
 from enum import Enum
+from typing import List
 
 import pandas
+from traveltimepy.http import json
 
 from traveltime_google_comparison.requests.traveltime_credentials import (
-    TravelTimeCredentials,
+    Credentials,
 )
 
 DEFAULT_GOOGLE_RPM = 60
@@ -28,6 +30,22 @@ pandas.set_option("display.max_columns", None)
 pandas.set_option("display.width", None)
 
 
+@dataclass
+class Provider:
+    name: str
+    max_rpm: int
+    credentials: Credentials
+
+
+@dataclass
+class Providers:
+    base: Provider
+    competitors: List[Provider]
+
+    def all_names(self) -> List[str]:
+        return [self.base.name] + [competitor.name for competitor in self.competitors]
+
+
 class Mode(Enum):
     DRIVING = "driving"
     PUBLIC_TRANSPORT = "public_transport"
@@ -35,7 +53,7 @@ class Mode(Enum):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Fetch and compare travel times from Google Directions API and TravelTime Routes API"
+        description="Fetch and compare travel times from TravelTime Routes API and it's competitors"
     )
     parser.add_argument("--input", required=True, help="Input CSV file path")
     parser.add_argument("--output", required=True, help="Output CSV file path")
@@ -51,55 +69,11 @@ def parse_args():
         help="Non-abbreviated time zone identifier e.g. Europe/London",
     )
     parser.add_argument(
-        "--google-max-rpm",
+        "--config",
         required=False,
-        type=int,
-        default=DEFAULT_GOOGLE_RPM,
-        help="Maximum number of requests sent to Google API per minute",
+        default="./config.json",
+        help="Path to your config file. Default - ./config.json",
     )
-    parser.add_argument(
-        "--tomtom-max-rpm",
-        required=False,
-        type=int,
-        default=DEFAULT_TOMTOM_RPM,
-        help="Maximum number of requests sent to TomTom API per minute",
-    )
-    parser.add_argument(
-        "--here-max-rpm",
-        required=False,
-        type=int,
-        default=DEFAULT_HERE_RPM,
-        help="Maximum number of requests sent to HERE API per minute",
-    )
-    parser.add_argument(
-        "--osrm-max-rpm",
-        required=False,
-        type=int,
-        default=DEFAULT_OSRM_RPM,
-        help="Maximum number of requests sent to OSRM API per minute",
-    )
-    parser.add_argument(
-        "--openroutes-max-rpm",
-        required=False,
-        type=int,
-        default=DEFAULT_OPENROUTES_RPM,
-        help="Maximum number of requests sent to OpenRoutes API per minute",
-    )
-    parser.add_argument(
-        "--mapbox-max-rpm",
-        required=False,
-        type=int,
-        default=DEFAULT_MAPBOX_RPM,
-        help="Maximum number of requests sent to Mapbox API per minute",
-    )
-    parser.add_argument(
-        "--traveltime-max-rpm",
-        required=False,
-        type=int,
-        default=DEFAULT_TRAVELTIME_RPM,
-        help="Maximum number of requests sent to TravelTime API per minute",
-    )
-
     parser.add_argument(
         "--skip-data-gathering",
         action=argparse.BooleanOptionalAction,
@@ -111,54 +85,40 @@ def parse_args():
     return parser.parse_args()
 
 
-def retrieve_google_api_key():
-    google_api_key = os.environ.get(GOOGLE_API_KEY_VAR_NAME)
+def parse_json_to_providers(json_data: str) -> Providers:
+    data = json.loads(json_data)
 
-    if not google_api_key:
-        raise ValueError(f"{GOOGLE_API_KEY_VAR_NAME} not set in environment variables.")
-    return google_api_key
+    # Parse TravelTime (base provider)
+    traveltime_data = data["traveltime"]
+    base_provider = Provider(
+        name="traveltime",
+        max_rpm=int(traveltime_data["max-rpm"]),
+        credentials=Credentials(
+            app_id=traveltime_data["app-id"], api_key=traveltime_data["api-key"]
+        ),
+    )
 
+    # Parse competitor providers
+    competitors = []
+    for provider_data in data["api-providers"]:
+        enabled = provider_data["enabled"]
+        if enabled:
+            competitor = Provider(
+                name=provider_data["name"],
+                max_rpm=int(provider_data["max-rpm"]),
+                credentials=Credentials(api_key=provider_data["api-key"]),
+            )
+            competitors.append(competitor)
 
-def retrieve_openroutes_api_key():
-    openroutes_api_key = os.environ.get(OPENROUTES_API_KEY_VAR_NAME)
-
-    if not openroutes_api_key:
+    if len(competitors) == 0:
         raise ValueError(
-            f"{OPENROUTES_API_KEY_VAR_NAME} not set in environment variables."
+            "There should be at least one enabled API provider that's not TravelTime."
         )
-    return openroutes_api_key
+
+    return Providers(base=base_provider, competitors=competitors)
 
 
-def retrieve_tomtom_api_key():
-    tomtom_api_key = os.environ.get(TOMTOM_API_KEY_VAR_NAME)
-
-    if not tomtom_api_key:
-        raise ValueError(f"{TOMTOM_API_KEY_VAR_NAME} not set in environment variables.")
-    return tomtom_api_key
-
-
-def retrieve_here_api_key():
-    here_api_key = os.environ.get(HERE_API_KEY_VAR_NAME)
-
-    if not here_api_key:
-        raise ValueError(f"{HERE_API_KEY_VAR_NAME} not set in environment variables.")
-    return here_api_key
-
-
-def retrieve_mapbox_api_key():
-    mapbox_api_key = os.environ.get(MAPBOX_API_KEY_VAR_NAME)
-
-    if not mapbox_api_key:
-        raise ValueError(f"{MAPBOX_API_KEY_VAR_NAME} not set in environment variables.")
-    return mapbox_api_key
-
-
-def retrieve_traveltime_credentials() -> TravelTimeCredentials:
-    app_id = os.environ.get(TRAVELTIME_APP_ID_VAR_NAME)
-    api_key = os.environ.get(TRAVELTIME_API_KEY_VAR_NAME)
-
-    if not (app_id and api_key):
-        raise ValueError(
-            "TravelTime API credentials are missing from environment variables."
-        )
-    return TravelTimeCredentials(app_id, api_key)
+def parse_config(file_path: str):
+    with open(file_path, "r") as file:  # letting it crash if this fails
+        content = file.read()
+        return parse_json_to_providers(content)
